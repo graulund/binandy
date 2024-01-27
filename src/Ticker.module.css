@@ -1,0 +1,30 @@
+.label {
+	font-size: 2vw;
+	color: #ccc;
+	font-weight: bold;
+}
+
+.value {
+	font-size: 8vw;
+	font-weight: bold;
+	font-feature-settings: "tnum";
+	color: var(--down-color);
+	margin: 0 0 2vw;
+}
+
+.value.valueUp {
+	color: var(--up-color);
+}
+
+.valueInput {
+	font-size: 5vw;
+	margin: 1vw 0 2vw;
+}
+
+.valueInput input {
+	font-family: inherit;
+	font-size: inherit;
+	text-align: inherit;
+	border: 3px solid #ccc;
+	color: #333;
+}
