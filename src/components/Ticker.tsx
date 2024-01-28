@@ -1,11 +1,11 @@
 import { useCallback, useContext, useEffect, useState } from "react";
 import clsx from "clsx";
 
-import { TickerContext } from "./TickerData";
+import { TickerContext } from "../contexts/TickerData";
+import { localCurrencyRate } from "../constants";
 
 import styles from "./Ticker.module.css";
 
-const localCurrencyRate = 6.84;
 const amountInLocalStorageName = "binandy.amount-in";
 
 const localCurrencyFormatter = new Intl.NumberFormat(

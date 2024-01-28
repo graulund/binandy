@@ -1,20 +1,21 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { tickerWsOrigin, tickerWsUrl } from "./constants";
+import { tickerWsOrigin, tickerWsUrl } from "../constants";
 
 const tickerEventType = "24hrMiniTicker";
 
 /*
-  {
-	"e": "24hrMiniTicker",  // Event type
-	"E": 1672515782136,         // Event time
-	"s": "BNBBTC",          // Symbol
-	"c": "0.0025",          // Close price
-	"o": "0.0010",          // Open price
-	"h": "0.0025",          // High price
-	"l": "0.0010",          // Low price
-	"v": "10000",           // Total traded base asset volume
-	"q": "18"               // Total traded quote asset volume
-  }*/
+	{
+		"e": "24hrMiniTicker", // Event type
+		"E": 1672515782136,    // Event time
+		"s": "BNBBTC",         // Symbol
+		"c": "0.0025",         // Close price
+		"o": "0.0010",         // Open price
+		"h": "0.0025",         // High price
+		"l": "0.0010",         // Low price
+		"v": "10000",          // Total traded base asset volume
+		"q": "18"              // Total traded quote asset volume
+	}
+*/
 
 type TickerEventPayload = {
 	updated: Date;

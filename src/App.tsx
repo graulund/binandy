@@ -1,15 +1,14 @@
-import Ticker from "./Ticker";
-import TickerData from "./TickerData";
-import "./App.css";
+import Ticker from "./components/Ticker";
+import TickerData from "./contexts/TickerData";
 
-function App() {
+import styles from "./App.module.css";
+
+export default function App() {
 	return (
-		<div className="App">
+		<div className={styles.app}>
 			<TickerData>
 				<Ticker />
 			</TickerData>
 		</div>
 	);
 }
-
-export default App;
