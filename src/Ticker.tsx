@@ -46,7 +46,7 @@ export default function Ticker() {
 	}, []);
 
 	useEffect(() => {
-		if (price && typeof document === "object") {
+		if (price && typeof document === "object" && amountIn > 0) {
 			document.title = localCurrencyFormatter.format(amountIn * price * localCurrencyRate);
 		}
 	}, [price, amountIn]);
@@ -80,18 +80,22 @@ export default function Ticker() {
 					onChange={handleNewAmountIn}
 				/>
 			</div>
-			<div className={styles.label}>
-				Your holdings:
-			</div>
-			<div className={valueClassName}>
-				{currencyFormatter.format(amountIn * price)}
-			</div>
-			<div className={styles.label}>
-				Which is:
-			</div>
-			<div className={valueClassName}>
-				{localCurrencyFormatter.format(amountIn * price * localCurrencyRate)}
-			</div>
+			{amountIn > 0 && (
+				<>
+					<div className={styles.label}>
+						Your holdings:
+					</div>
+					<div className={valueClassName}>
+						{currencyFormatter.format(amountIn * price)}
+					</div>
+					<div className={styles.label}>
+						Which is:
+					</div>
+					<div className={valueClassName}>
+						{localCurrencyFormatter.format(amountIn * price * localCurrencyRate)}
+					</div>
+				</>
+			)}
 		</div>
 	);
 }
