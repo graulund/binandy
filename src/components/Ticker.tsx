@@ -2,6 +2,7 @@ import { useCallback, useContext, useEffect, useState } from "react";
 import clsx from "clsx";
 
 import { TickerContext } from "../contexts/TickerData";
+import setDocTitle from "../lib/docTitle";
 import { localCurrencyRate } from "../constants";
 
 import styles from "./Ticker.module.css";
@@ -45,11 +46,11 @@ export default function Ticker() {
 		}
 	}, []);
 
-	useEffect(() => {
-		if (price && typeof document === "object" && amountIn > 0) {
-			document.title = localCurrencyFormatter.format(amountIn * price * localCurrencyRate);
-		}
-	}, [price, amountIn]);
+	useEffect(() => setDocTitle(
+		price && amountIn > 0
+			? localCurrencyFormatter.format(amountIn * price * localCurrencyRate)
+			: ""
+	), [price, amountIn]);
 
 	if (!price) {
 		return null;
