@@ -1,13 +1,12 @@
-import { useCallback, useContext, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect } from "react";
 import clsx from "clsx";
 
-import { TickerContext } from "../contexts/TickerData";
+import AppData from "../contexts/AppData";
+import TickerData from "../contexts/TickerData";
 import setDocTitle from "../lib/docTitle";
 import { localCurrencyRate } from "../constants";
 
 import styles from "./Ticker.module.css";
-
-const amountInLocalStorageName = "binandy.amount-in";
 
 const localCurrencyFormatter = new Intl.NumberFormat(
 	"da-DK", { style: "currency", currency: "DKK" }
@@ -18,33 +17,20 @@ const currencyFormatter = new Intl.NumberFormat(
 );
 
 export default function Ticker() {
-	const data = useContext(TickerContext);
-	const [amountIn, setAmountIn] = useState(0);
+	const appData = useContext(AppData.Context);
+	const tickerData = useContext(TickerData.Context);
 
-	const price = data?.closePrice;
+	if (!appData) {
+		throw new Error("Missing app data");
+	}
+
+	const { amountIn, setAppData } = appData;
+	const price = tickerData?.closePrice;
 
 	const handleNewAmountIn = useCallback((evt: React.ChangeEvent<HTMLInputElement>) => {
 		const newAmountIn = Number(evt.target.value);
-		setAmountIn(newAmountIn);
-
-		try {
-			localStorage.setItem(amountInLocalStorageName, String(newAmountIn));
-		} catch (err) {
-			console.error(err);
-		}
-	}, []);
-
-	useEffect(() => {
-		try {
-			const amountInFromLocalStorage = localStorage.getItem(amountInLocalStorageName);
-
-			if (amountInFromLocalStorage) {
-				setAmountIn(Number(amountInFromLocalStorage));
-			}
-		} catch (err) {
-			console.error(err);
-		}
-	}, []);
+		setAppData({ amountIn: newAmountIn });
+	}, [setAppData]);
 
 	useEffect(() => setDocTitle(
 		price && amountIn > 0
@@ -57,7 +43,7 @@ export default function Ticker() {
 	}
 
 	const valueClassName = clsx(styles.value, {
-		[styles.valueUp]: data?.isUp
+		[styles.valueUp]: tickerData?.isUp
 	});
 
 	return (

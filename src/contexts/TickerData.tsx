@@ -32,10 +32,10 @@ type TickerContextData = TickerEventPayload & {
 	isUp: boolean;
 };
 
-export const TickerContext = React.createContext<TickerContextData | null>(null);
+const TickerDataContext = React.createContext<TickerContextData | null>(null);
 
 export default function TickerData({ children }: { children: React.ReactNode }) {
-	const [data, setData] = useState<TickerEventPayload | null>(null);
+	const [eventData, setEventData] = useState<TickerEventPayload | null>(null);
 	const prevPrice = useRef<number | null>(null);
 	const ws = useRef<WebSocket | null>(null);
 
@@ -70,7 +70,7 @@ export default function TickerData({ children }: { children: React.ReactNode }) 
 					typeof data.v === "string" &&
 					typeof data.q === "string"
 				) {
-					setData({
+					setEventData({
 						updated: new Date(data.E),
 						symbol: data.s,
 						closePrice: parseFloat(data.c),
@@ -94,23 +94,25 @@ export default function TickerData({ children }: { children: React.ReactNode }) 
 	}, []);
 
 	useEffect(() => {
-		prevPrice.current = data?.closePrice ?? null;
-	}, [data]);
+		prevPrice.current = eventData?.closePrice ?? null;
+	}, [eventData]);
 
 	const contextData = useMemo(() => {
-		if (!data) {
+		if (!eventData) {
 			return null;
 		}
 
 		return {
-			...data,
-			isUp: prevPrice.current !== null && data.closePrice >= prevPrice.current
+			...eventData,
+			isUp: prevPrice.current !== null && eventData.closePrice >= prevPrice.current
 		};
-	}, [data]);
+	}, [eventData]);
 
 	return (
-		<TickerContext.Provider value={contextData}>
+		<TickerDataContext.Provider value={contextData}>
 			{children}
-		</TickerContext.Provider>
+		</TickerDataContext.Provider>
 	);
 }
+
+TickerData.Context = TickerDataContext;
