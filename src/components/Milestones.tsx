@@ -23,12 +23,15 @@ export default function Milestones() {
 	}
 
 	// One value for each thousand DKK around the current price, 1 lower, 4 higher
+
+	const currentThousand = Math.floor(localValueIn / 1000) * 1000;
+
 	const localMilestoneValues = [
-		Math.floor(localValueIn / 1000) * 1000,
-		Math.floor(localValueIn / 1000) * 1000 + 1000,
-		Math.floor(localValueIn / 1000) * 1000 + 2000,
-		Math.floor(localValueIn / 1000) * 1000 + 3000,
-		Math.floor(localValueIn / 1000) * 1000 + 4000,
+		currentThousand,
+		currentThousand + 1000,
+		currentThousand + 2000,
+		currentThousand + 3000,
+		currentThousand + 4000
 	];
 
 	return (
