@@ -4,17 +4,10 @@ import clsx from "clsx";
 import AppData from "../contexts/AppData";
 import TickerData from "../contexts/TickerData";
 import UserDerivedData from "../contexts/UserDerivedData";
+import { formatCurrency, formatLocalCurrency } from "../lib/currencies";
 import setDocTitle from "../lib/docTitle";
 
 import styles from "./Ticker.module.css";
-
-const localCurrencyFormatter = new Intl.NumberFormat(
-	"da-DK", { style: "currency", currency: "DKK" }
-);
-
-const currencyFormatter = new Intl.NumberFormat(
-	"en-US", { style: "currency", currency: "USD" }
-);
 
 export default function Ticker() {
 	const appData = useContext(AppData.Context);
@@ -35,7 +28,7 @@ export default function Ticker() {
 
 	useEffect(() => setDocTitle(
 		price && localValueIn && localValueIn > 0
-			? localCurrencyFormatter.format(localValueIn)
+			? formatLocalCurrency(localValueIn)
 			: ""
 	), [price, localValueIn]);
 
@@ -49,7 +42,7 @@ export default function Ticker() {
 				Current BTC/USDT price:
 			</div>
 			<div className={clsx(styles.value, styles.valueWithSymbol)}>
-				<span>{currencyFormatter.format(price)}</span>
+				<span>{formatCurrency(price)}</span>
 				<span className={styles.valueSymbol}>
 					{tickerData?.isUp && (
 						<span className={styles.arrowUp}>
@@ -82,13 +75,13 @@ export default function Ticker() {
 						Your holdings:
 					</div>
 					<div className={styles.value}>
-						{currencyFormatter.format(valueIn)}
+						{formatCurrency(valueIn)}
 					</div>
 					<div className={styles.label}>
 						Which is:
 					</div>
 					<div className={styles.value}>
-						{localCurrencyFormatter.format(localValueIn)}
+						{formatLocalCurrency(localValueIn)}
 					</div>
 				</>
 			)}

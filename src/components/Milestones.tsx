@@ -4,17 +4,10 @@ import clsx from "clsx";
 import AppData from "../contexts/AppData";
 import TickerData from "../contexts/TickerData";
 import UserDerivedData from "../contexts/UserDerivedData";
+import { formatCurrency, formatLocalCurrency } from "../lib/currencies";
 import { localCurrencyRate } from "../constants";
 
 import styles from "./Milestones.module.css";
-
-const localCurrencyFormatter = new Intl.NumberFormat(
-	"da-DK", { style: "currency", currency: "DKK" }
-);
-
-const currencyFormatter = new Intl.NumberFormat(
-	"en-US", { style: "currency", currency: "USD" }
-);
 
 export default function Milestones() {
 	const appData = useContext(AppData.Context);
@@ -56,15 +49,15 @@ export default function Milestones() {
 					return (
 						<div className={styles.milestone} key={value}>
 							<div className={styles.label}>
-								{localCurrencyFormatter.format(value)} at:
+								{formatLocalCurrency(value)} at:
 							</div>
 							<div className={styles.value}>
-								{currencyFormatter.format(goalPrice)}
+								{formatCurrency(goalPrice)}
 							</div>
 							<div className={differenceClassName}>
 								(
 									{difference >= 0 ? "+" : undefined}
-									{currencyFormatter.format(difference)}
+									{formatCurrency(difference)}
 								)
 							</div>
 						</div>
