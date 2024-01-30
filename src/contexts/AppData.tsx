@@ -17,6 +17,7 @@ type AppContextValue = AppContextData & {
 const AppDataContext = React.createContext<AppContextValue | null>(null);
 
 export default function AppData({ children }: { children: React.ReactNode }) {
+	const [dataLoaded, setDataLoaded] = useState(false);
 	const [data, setData] = useState<AppContextData | null>(null);
 
 	useEffect(() => {
@@ -28,6 +29,8 @@ export default function AppData({ children }: { children: React.ReactNode }) {
 			if (storedData) {
 				setData(JSON.parse(storedData));
 			}
+
+			setDataLoaded(true);
 		} catch (e) {
 			console.error("Error loading app data", e);
 			setData(null);
@@ -35,6 +38,10 @@ export default function AppData({ children }: { children: React.ReactNode }) {
 	}, []);
 
 	useEffect(() => {
+		if (!dataLoaded) {
+			return;
+		}
+
 		try {
 			localStorage.setItem(
 				appDataStorageName,
@@ -43,7 +50,7 @@ export default function AppData({ children }: { children: React.ReactNode }) {
 		} catch (e) {
 			console.error("Error saving app data", e);
 		}
-	}, [data]);
+	}, [data, dataLoaded]);
 
 	const setAppData = useCallback((newValues: Partial<AppContextData>) => {
 		setData((prevData) => ({

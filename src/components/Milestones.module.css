@@ -1,0 +1,40 @@
+.label {
+	font-size: 2.5vw;
+	color: #999;
+	font-weight: bold;
+}
+
+.milestones {
+	display: flex;
+	justify-content: space-between;
+	margin: 1vw 0 2.5vw;
+}
+
+.milestone {
+	text-align: center;
+}
+
+.milestone .label {
+	font-size: 2vw;
+}
+
+.value {
+	font-size: 2.5vw;
+	font-weight: bold;
+	font-feature-settings: "tnum";
+	margin: .5vw 0;
+}
+
+.difference {
+	font-size: 2.5vw;
+	font-weight: bold;
+	font-feature-settings: "tnum";
+}
+
+.differenceAbove {
+	color: var(--up-color);
+}
+
+.differenceBelow {
+	color: var(--down-color);
+}

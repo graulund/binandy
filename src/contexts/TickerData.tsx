@@ -30,6 +30,7 @@ type TickerEventPayload = {
 
 type TickerContextData = TickerEventPayload & {
 	isUp: boolean;
+	isDown: boolean;
 };
 
 const TickerDataContext = React.createContext<TickerContextData | null>(null);
@@ -104,7 +105,8 @@ export default function TickerData({ children }: { children: React.ReactNode }) 
 
 		return {
 			...eventData,
-			isUp: prevPrice.current !== null && eventData.closePrice >= prevPrice.current
+			isUp: prevPrice.current !== null && eventData.closePrice > prevPrice.current,
+			isDown: prevPrice.current !== null && eventData.closePrice < prevPrice.current
 		};
 	}, [eventData]);
 

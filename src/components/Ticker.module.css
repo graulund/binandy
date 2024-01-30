@@ -1,6 +1,6 @@
 .label {
-	font-size: 2vw;
-	color: #ccc;
+	font-size: 2.5vw;
+	color: #999;
 	font-weight: bold;
 }
 
@@ -8,17 +8,12 @@
 	font-size: 8vw;
 	font-weight: bold;
 	font-feature-settings: "tnum";
-	color: var(--down-color);
-	margin: 0 0 2vw;
-}
-
-.value.valueUp {
-	color: var(--up-color);
+	margin: 0 0 2.5vw;
 }
 
 .valueInput {
 	font-size: 5vw;
-	margin: 1vw 0 2vw;
+	margin: 1vw 0 2.5vw;
 }
 
 .valueInput input {
@@ -27,4 +22,36 @@
 	text-align: inherit;
 	border: .375vw solid #ccc;
 	color: #333;
+}
+
+.valueWithSymbol {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.valueWithSymbol > :first-child {
+	/* TODO: Refactor this selector */
+	margin-left: .625em;
+}
+
+.valueSymbol {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: .625em;
+	text-align: center;
+}
+
+.arrowUp,
+.arrowDown {
+	font-size: 50%;
+}
+
+.arrowUp {
+	color: var(--up-color);
+}
+
+.arrowDown {
+	color: var(--down-color);
 }
