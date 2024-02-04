@@ -1,5 +1,6 @@
 .label {
-	font-size: 2.5vw;
+	/* TODO: Make this component generic */
+	font-size: 1.5rem;
 	color: #999;
 	font-weight: bold;
 }
@@ -7,7 +8,14 @@
 .milestones {
 	display: flex;
 	justify-content: space-between;
-	margin: 1vw 0 2.5vw;
+	margin: 1rem 0 2rem;
+}
+
+@media (max-width: 72.5rem) {
+	.milestones {
+		flex-direction: column;
+		gap: 2rem;
+	}
 }
 
 .milestone {
@@ -15,20 +23,31 @@
 }
 
 .milestone .label {
-	font-size: 2vw;
+	font-size: 1.5rem;
 }
 
 .value {
-	font-size: 2.5vw;
+	font-size: 2rem;
 	font-weight: bold;
 	font-feature-settings: "tnum";
-	margin: .5vw 0;
+	margin: .5rem 0;
 }
 
 .difference {
-	font-size: 2.5vw;
+	font-size: 2rem;
 	font-weight: bold;
 	font-feature-settings: "tnum";
+}
+
+@media (min-width: 105rem) {
+	.label,
+	.milestone .label {
+		font-size: 2rem;
+	}
+
+	.value, .difference {
+		font-size: 3rem;
+	}
 }
 
 .differenceAbove {

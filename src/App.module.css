@@ -1,4 +1,10 @@
 .app {
 	text-align: center;
-	margin: 6vw;
+	margin: 4rem;
+}
+
+@media (max-width: 35rem) {
+	.app {
+		margin: 6vw;
+	}
 }
