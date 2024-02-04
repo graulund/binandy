@@ -1,0 +1,17 @@
+.label {
+	font-size: 2rem;
+	color: #999;
+	font-weight: bold;
+}
+
+@media (max-width: 35rem) {
+	.label {
+		font-size: 1.5rem;
+	}
+}
+
+@media (max-width: 25rem) {
+	.label {
+		font-size: 1.25rem;
+	}
+}

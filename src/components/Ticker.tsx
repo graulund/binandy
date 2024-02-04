@@ -1,13 +1,13 @@
 import { useCallback, useContext, useEffect } from "react";
-import clsx from "clsx";
 
 import AppData from "../contexts/AppData";
 import TickerData from "../contexts/TickerData";
+import TickerLabel from "./TickerLabel";
+import TickerValue from "./TickerValue";
+import TickerValueInput from "./TickerValueInput";
 import UserDerivedData from "../contexts/UserDerivedData";
-import { formatCurrency, formatLocalCurrency } from "../lib/currencies";
+import { formatLocalCurrency } from "../lib/currencies";
 import setDocTitle from "../lib/docTitle";
-
-import styles from "./Ticker.module.css";
 
 export default function Ticker() {
 	const appData = useContext(AppData.Context);
@@ -37,52 +37,36 @@ export default function Ticker() {
 	}
 
 	return (
-		<div className={styles.ticker}>
-			<div className={styles.label}>
+		<div>
+			<TickerLabel>
 				Current BTC/USDT price:
-			</div>
-			<div className={clsx(styles.value, styles.valueWithSymbol)}>
-				<span>{formatCurrency(price)}</span>
-				<span className={styles.valueSymbol}>
-					{tickerData?.isUp && (
-						<span className={styles.arrowUp}>
-							↑
-						</span>
-					)}
-					{tickerData?.isDown && (
-						<span className={styles.arrowDown}>
-							↓
-						</span>
-					)}
-				</span>
-			</div>
-			<div className={styles.label}>
+			</TickerLabel>
+			<TickerValue
+				withSymbol
+				value={price}
+				isUp={tickerData?.isUp}
+				isDown={tickerData?.isDown}
+			/>
+			<TickerLabel>
 				<label htmlFor="amount-in-input">
 					Your BTC amount in:
 				</label>
-			</div>
-			<div className={styles.valueInput}>
-				<input
-					id="amount-in-input"
-					type="number"
-					value={amountIn}
-					onChange={handleNewAmountIn}
-				/>
-			</div>
+			</TickerLabel>
+			<TickerValueInput
+				id="amount-in-input"
+				value={amountIn}
+				onChange={handleNewAmountIn}
+			/>
 			{amountIn > 0 && (
 				<>
-					<div className={styles.label}>
+					<TickerLabel>
 						Your holdings:
-					</div>
-					<div className={styles.value}>
-						{formatCurrency(valueIn)}
-					</div>
-					<div className={styles.label}>
+					</TickerLabel>
+					<TickerValue value={valueIn} />
+					<TickerLabel>
 						Which is:
-					</div>
-					<div className={styles.value}>
-						{formatLocalCurrency(localValueIn)}
-					</div>
+					</TickerLabel>
+					<TickerValue isLocalValue value={localValueIn} />
 				</>
 			)}
 		</div>

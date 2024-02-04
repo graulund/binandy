@@ -1,9 +1,3 @@
-.label {
-	font-size: 2rem;
-	color: #999;
-	font-weight: bold;
-}
-
 .value {
 	font-size: 4rem;
 	font-weight: bold;
@@ -11,26 +5,13 @@
 	margin: 0 0 1.5rem;
 }
 
-.valueInput {
-	font-size: 3rem;
-	margin: .5rem 0 1.5rem;
-}
-
 @media (max-width: 35rem) {
-	.label {
-		font-size: 1.5rem;
-	}
-
 	.value {
 		font-size: 3rem;
 	}
 }
 
 @media (max-width: 25rem) {
-	.label {
-		font-size: 1.25rem;
-	}
-
 	.value {
 		font-size: 2.5rem;
 	}
@@ -46,15 +27,6 @@
 	.value {
 		font-size: 8rem;
 	}
-}
-
-.valueInput input {
-	font-family: inherit;
-	font-size: inherit;
-	text-align: inherit;
-	border: .1875rem solid #ccc;
-	color: #333;
-	max-width: 100%;
 }
 
 .valueWithSymbol {

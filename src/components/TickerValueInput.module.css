@@ -1,0 +1,23 @@
+.valueInput {
+	font-size: 3rem;
+	margin: .5rem 0 1.5rem;
+}
+
+.valueInput input {
+	font-family: inherit;
+	font-size: inherit;
+	text-align: inherit;
+	border: .1875rem solid #ccc;
+	color: #333;
+	max-width: 100%;
+}
+
+@media (max-width: 35rem) {
+	.valueInput {
+		font-size: 1.5rem;
+	}
+
+	.valueInput input {
+		border-width: .125rem;
+	}
+}
