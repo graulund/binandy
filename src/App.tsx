@@ -1,6 +1,7 @@
 import AppData from "./contexts/AppData";
 import Gains from "./components/Gains";
 import Milestones from "./components/Milestones";
+import MoneyThermometer from "./components/MoneyThermometer";
 import Ticker from "./components/Ticker";
 import TickerData from "./contexts/TickerData";
 import UserDerivedData from "./contexts/UserDerivedData";
@@ -16,6 +17,7 @@ export default function App() {
 						<Ticker />
 						<Gains />
 						<Milestones />
+						<MoneyThermometer />
 					</UserDerivedData>
 				</TickerData>
 			</AppData>
