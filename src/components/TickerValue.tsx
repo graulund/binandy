@@ -5,31 +5,38 @@ import { formatCurrency, formatLocalCurrency } from "../lib/currencies";
 import styles from "./TickerValue.module.css";
 
 type TickerValueProps = {
-	value: number;
-	isLocalValue?: boolean;
-	withSymbol?: boolean;
-	isUp?: boolean;
+	isDifference?: boolean;
 	isDown?: boolean;
+	isLocalValue?: boolean;
+	isUp?: boolean;
+	value: number;
+	withSymbol?: boolean;
 };
 
 export default function TickerValue({
-	value,
+	isDifference,
+	isDown,
 	isLocalValue,
-	withSymbol,
 	isUp,
-	isDown
+	value,
+	withSymbol
 }: TickerValueProps) {
 	const formattedValue = isLocalValue
 		? formatLocalCurrency(value)
 		: formatCurrency(value);
 
-	const className = withSymbol
-		? clsx(styles.value, styles.valueWithSymbol)
-		: styles.value;
+	const className = clsx(styles.value, {
+		[styles.valueWithSymbol]: withSymbol,
+		[styles.differenceAbove]: isDifference && value > 0,
+		[styles.differenceBelow]: isDifference && value < 0
+	});
 
 	return (
 		<div className={className}>
-			<span>{formattedValue}</span>
+			<span>
+				{isDifference && value > 0 && "+"}
+				{formattedValue}
+			</span>
 			{withSymbol && (
 				<span className={styles.valueSymbol}>
 					{isUp && (

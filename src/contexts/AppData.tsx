@@ -4,10 +4,12 @@ const appDataStorageName = "binandy.state";
 
 type AppContextData = {
 	amountIn: number;
+	originalPrice: number | null;
 };
 
 const defaultContextData: AppContextData = {
-	amountIn: 0
+	amountIn: 0,
+	originalPrice: null
 };
 
 type AppContextValue = AppContextData & {

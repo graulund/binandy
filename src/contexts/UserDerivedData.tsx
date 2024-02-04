@@ -5,8 +5,10 @@ import TickerData from "./TickerData";
 import { localCurrencyRate } from "../constants";
 
 type UserDerivedDataValue = {
-	valueIn: number;
 	localValueIn: number;
+	originalLocalValueIn: number | null;
+	originalValueIn: number | null;
+	valueIn: number;
 };
 
 const UserDerivedDataContext = React.createContext<UserDerivedDataValue | null>(null);
@@ -15,16 +17,23 @@ export default function UserDerivedData({ children }: { children: React.ReactNod
 	const appData = useContext(AppData.Context);
 	const tickerData = useContext(TickerData.Context);
 
-	let value = null;
+	let value: UserDerivedDataValue | null = null;
 
 	if (appData && tickerData) {
-		const { amountIn } = appData;
+		const { amountIn, originalPrice } = appData;
 		const { closePrice } = tickerData;
 
 		value = {
+			localValueIn: amountIn * closePrice * localCurrencyRate,
+			originalLocalValueIn: null,
+			originalValueIn: null,
 			valueIn: amountIn * closePrice,
-			localValueIn: amountIn * closePrice * localCurrencyRate
 		};
+
+		if (originalPrice && originalPrice > 0) {
+			value.originalValueIn = originalPrice * amountIn;
+			value.originalLocalValueIn = originalPrice * amountIn * localCurrencyRate;
+		}
 	}
 
 	return (

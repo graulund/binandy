@@ -60,3 +60,11 @@
 .arrowDown {
 	color: var(--down-color);
 }
+
+.differenceAbove {
+	color: var(--up-color);
+}
+
+.differenceBelow {
+	color: var(--down-color);
+}

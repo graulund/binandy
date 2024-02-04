@@ -1,4 +1,5 @@
 import AppData from "./contexts/AppData";
+import Gains from "./components/Gains";
 import Milestones from "./components/Milestones";
 import Ticker from "./components/Ticker";
 import TickerData from "./contexts/TickerData";
@@ -13,6 +14,7 @@ export default function App() {
 				<TickerData>
 					<UserDerivedData>
 						<Ticker />
+						<Gains />
 						<Milestones />
 					</UserDerivedData>
 				</TickerData>
