@@ -7,6 +7,9 @@ import TickerValue from "./TickerValue";
 import TickerValueInput from "./TickerValueInput";
 import UserDerivedData from "../contexts/UserDerivedData";
 
+const feeRatio = 0.001;
+const lowerFeeRatio = 0.00075;
+
 export default function Gains() {
 	const appData = useContext(AppData.Context);
 	const tickerData = useContext(TickerData.Context);
@@ -67,6 +70,22 @@ export default function Gains() {
 							isDifference
 							isLocalValue
 							value={localValueIn - originalLocalValueIn}
+						/>
+						<TickerLabel>
+							If you exited now, you would get (after 0.75% fee):
+						</TickerLabel>
+						<TickerValue
+							isDifference
+							isLocalValue
+							value={localValueIn - originalLocalValueIn - (localValueIn * lowerFeeRatio)}
+						/>
+						<TickerLabel>
+							If you exited now, you would get (after 1% fee):
+						</TickerLabel>
+						<TickerValue
+							isDifference
+							isLocalValue
+							value={localValueIn - originalLocalValueIn - (localValueIn * feeRatio)}
 						/>
 					</>
 				)
