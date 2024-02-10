@@ -22,12 +22,12 @@ export default function Milestones() {
 
 	const {
 		getNeededPriceForDesiredLocalHoldings,
-		localValueIn = 0
+		localHoldings = 0
 	} = derived;
 
 	// One value for each thousand DKK around the current price, 1 lower, 4 higher
 
-	const currentThousand = getThousandFromValue(localValueIn);
+	const currentThousand = getThousandFromValue(localHoldings);
 
 	const localMilestoneValues = [
 		currentThousand,

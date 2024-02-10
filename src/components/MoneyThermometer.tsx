@@ -47,23 +47,23 @@ export default function MoneyThermometer() {
 
 	const {
 		getNeededPriceForDesiredLocalHoldings,
-		localValueIn = 0
+		localHoldings = 0
 	} = derived;
 
-	const currentHundred = getHundredFromValue(localValueIn);
+	const currentHundred = getHundredFromValue(localHoldings);
 	const hundreds = [];
 
-	if (currentHundred !== Math.round(localValueIn)) {
+	if (currentHundred !== Math.round(localHoldings)) {
 		hundreds.push(currentHundred);
 	}
 
 	// Add all hundreds available on screen around the current value
 
-	let markerValue = localValueIn;
+	let markerValue = localHoldings;
 
 	let position = getViewportPositionFromValue(
 		markerValue,
-		localValueIn,
+		localHoldings,
 		viewportHeight
 	);
 
@@ -73,18 +73,18 @@ export default function MoneyThermometer() {
 
 		position = getViewportPositionFromValue(
 			markerValue,
-			localValueIn,
+			localHoldings,
 			viewportHeight
 		);
 
 		hundreds.push(markerValue);
 	}
 
-	markerValue = localValueIn;
+	markerValue = localHoldings;
 
 	position = getViewportPositionFromValue(
 		markerValue,
-		localValueIn,
+		localHoldings,
 		viewportHeight
 	);
 
@@ -94,7 +94,7 @@ export default function MoneyThermometer() {
 
 		position = getViewportPositionFromValue(
 			markerValue,
-			localValueIn,
+			localHoldings,
 			viewportHeight
 		);
 
@@ -108,7 +108,7 @@ export default function MoneyThermometer() {
 					top: `${viewportHeight/2}px`
 				}}>
 					<strong className={styles.holding}>
-						▶ {formatLocalCurrency(localValueIn)}
+						▶ {formatLocalCurrency(localHoldings)}
 					</strong>
 					<span className={styles.price}>
 						{formatCurrency(price)} per BTC
@@ -121,7 +121,7 @@ export default function MoneyThermometer() {
 						style={{
 							top: `${getViewportPositionFromValue(
 								value,
-								localValueIn,
+								localHoldings,
 								viewportHeight
 							)}px`
 						}}
