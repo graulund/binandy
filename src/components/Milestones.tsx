@@ -14,7 +14,8 @@ export default function Milestones() {
 	const tickerData = useContext(TickerData.Context);
 	const userDerivedData = useContext(UserDerivedData.Context);
 
-	const { amountIn = 0 } = appData || {};
+	const { config } = appData;
+	const { amountIn = 0 } = config || {};
 	const { localValueIn = 0 } = userDerivedData || {};
 	const price = tickerData.data?.closePrice;
 

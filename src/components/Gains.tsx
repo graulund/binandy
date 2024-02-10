@@ -15,7 +15,8 @@ export default function Gains() {
 	const tickerData = useContext(TickerData.Context);
 	const userDerivedData = useContext(UserDerivedData.Context);
 
-	const { amountIn = 0, originalPrice = null, setAppData } = appData || {};
+	const { config, setAppConfig } = appData;
+	const { amountIn = 0, originalPrice = null } = config || {};
 	const {
 		localValueIn = 0,
 		originalLocalValueIn = null,
@@ -27,10 +28,10 @@ export default function Gains() {
 	const handleNewOriginalPrice = useCallback((evt: React.ChangeEvent<HTMLInputElement>) => {
 		const newOriginalPrice = Number(evt.target.value);
 
-		if (typeof setAppData === "function") {
-			setAppData({ originalPrice: newOriginalPrice });
+		if (typeof setAppConfig === "function") {
+			setAppConfig({ originalPrice: newOriginalPrice });
 		}
-	}, [setAppData]);
+	}, [setAppConfig]);
 
 	if (!price || !appData || !userDerivedData || !amountIn) {
 		return null;

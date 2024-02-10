@@ -27,7 +27,8 @@ export default function MoneyThermometer() {
 	const userDerivedData = useContext(UserDerivedData.Context);
 	const [viewportHeight, setViewportHeight] = useState(0);
 
-	const { amountIn = 0 } = appData || {};
+	const { config } = appData;
+	const { amountIn = 0 } = config || {};
 	const { localValueIn = 0 } = userDerivedData || {};
 	const price = tickerData.data?.closePrice;
 

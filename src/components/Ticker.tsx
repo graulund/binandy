@@ -17,25 +17,26 @@ export default function Ticker() {
 	const userDerivedData = useContext(UserDerivedData.Context);
 
 	const { error, loading } = tickerData;
-	const { amountIn = 0, amountToSpend = 0, setAppData } = appData || {};
+	const { config, setAppConfig } = appData;
+	const { amountIn = 0, amountToSpend = 0 } = config || {};
 	const { valueIn = 0, localValueIn = 0 } = userDerivedData || {};
 	const price = tickerData.data?.closePrice;
 
 	const handleNewAmountIn = useCallback((evt: React.ChangeEvent<HTMLInputElement>) => {
 		const newAmountIn = Number(evt.target.value);
 
-		if (typeof setAppData === "function") {
-			setAppData({ amountIn: newAmountIn });
+		if (typeof setAppConfig === "function") {
+			setAppConfig({ amountIn: newAmountIn });
 		}
-	}, [setAppData]);
+	}, [setAppConfig]);
 
 	const handleNewAmountToSpend = useCallback((evt: React.ChangeEvent<HTMLInputElement>) => {
 		const newAmountToSpend = Number(evt.target.value);
 
-		if (typeof setAppData === "function") {
-			setAppData({ amountToSpend: newAmountToSpend });
+		if (typeof setAppConfig === "function") {
+			setAppConfig({ amountToSpend: newAmountToSpend });
 		}
-	}, [setAppData]);
+	}, [setAppConfig]);
 
 	useEffect(() => setDocTitle(
 		price && localValueIn && localValueIn > 0

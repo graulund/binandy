@@ -16,11 +16,12 @@ const UserDerivedDataContext = React.createContext<UserDerivedDataValue | null>(
 export default function UserDerivedData({ children }: { children: React.ReactNode }) {
 	const appData = useContext(AppData.Context);
 	const tickerData = useContext(TickerData.Context);
+	const { config } = appData;
 
 	let value: UserDerivedDataValue | null = null;
 
-	if (appData && tickerData.data) {
-		const { amountIn, originalPrice } = appData;
+	if (config && tickerData.data) {
+		const { amountIn, originalPrice } = config;
 		const { closePrice } = tickerData.data;
 
 		value = {

@@ -1,44 +1,30 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 
-const appDataStorageName = "binandy.state";
+import {
+	AppConfig,
+	defaultAppConfig,
+	getConfigFromStorage,
+	saveConfigToStorage
+} from "../lib/appConfig";
 
 type AppContextData = {
-	amountIn: number;
-	amountToSpend: number;
-	originalPrice: number | null;
-};
-
-const defaultContextData: AppContextData = {
-	amountIn: 0,
-	amountToSpend: 0,
-	originalPrice: null
+	config: AppConfig | null;
 };
 
 type AppContextValue = AppContextData & {
-	setAppData: (newValues: Partial<AppContextData>) => void;
+	setAppConfig: (newValues: Partial<AppConfig>) => void;
 };
 
-const AppDataContext = React.createContext<AppContextValue | null>(null);
+const AppDataContext = React.createContext<AppContextValue>({} as AppContextValue);
 
 export default function AppData({ children }: { children: React.ReactNode }) {
 	const [dataLoaded, setDataLoaded] = useState(false);
-	const [data, setData] = useState<AppContextData | null>(null);
+	const [config, setConfig] = useState<AppConfig | null>(null);
 
 	useEffect(() => {
-		try {
-			const storedData = localStorage.getItem(
-				appDataStorageName
-			);
-
-			if (storedData) {
-				setData(JSON.parse(storedData));
-			}
-
-			setDataLoaded(true);
-		} catch (e) {
-			console.error("Error loading app data", e);
-			setData(null);
-		}
+		const config = getConfigFromStorage();
+		setConfig(config);
+		setDataLoaded(true);
 	}, []);
 
 	useEffect(() => {
@@ -46,28 +32,20 @@ export default function AppData({ children }: { children: React.ReactNode }) {
 			return;
 		}
 
-		try {
-			localStorage.setItem(
-				appDataStorageName,
-				JSON.stringify(data || null)
-			);
-		} catch (e) {
-			console.error("Error saving app data", e);
-		}
-	}, [data, dataLoaded]);
+		saveConfigToStorage(config);
+	}, [config, dataLoaded]);
 
-	const setAppData = useCallback((newValues: Partial<AppContextData>) => {
-		setData((prevData) => ({
-			...defaultContextData,
-			...prevData,
-			...newValues
+	const setAppConfig = useCallback((newConfigValues: Partial<AppConfig>) => {
+		setConfig((prevConfig) => ({
+			...(prevConfig || defaultAppConfig),
+			...newConfigValues
 		}));
 	}, []);
 
 	const contextValue = useMemo(() => ({
-		...(data || defaultContextData),
-		setAppData
-	}), [data, setAppData]);
+		config,
+		setAppConfig
+	}), [config, setAppConfig]);
 
 	return (
 		<AppDataContext.Provider value={contextValue}>
