@@ -1,6 +1,7 @@
 import { useCallback, useContext, useEffect } from "react";
 
 import AppData from "../contexts/AppData";
+import AppStatus from "./AppStatus";
 import TickerData from "../contexts/TickerData";
 import TickerLabel from "./TickerLabel";
 import TickerValue from "./TickerValue";
@@ -42,12 +43,8 @@ export default function Ticker() {
 			: ""
 	), [price, localValueIn]);
 
-	if (error) {
-		return <div>Error: {error}</div>;
-	}
-
-	if (loading) {
-		return <div>Loading...</div>;
+	if (error || loading) {
+		return <AppStatus error={error} loading={loading} />;
 	}
 
 	if (!price || !appData || !userDerivedData) {
