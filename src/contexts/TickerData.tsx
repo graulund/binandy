@@ -1,47 +1,11 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { z } from "zod";
 
-import { tickerWsOrigin, tickerWsUrl } from "../constants";
-
-const tickerEventType = "24hrMiniTicker";
-const numericRegex = /^-?\d+(\.\d+)?$/;
-
-/*
-	{
-		"e": "24hrMiniTicker", // Event type
-		"E": 1672515782136,    // Event time
-		"s": "BNBBTC",         // Symbol
-		"c": "0.0025",         // Close price
-		"o": "0.0010",         // Open price
-		"h": "0.0025",         // High price
-		"l": "0.0010",         // Low price
-		"v": "10000",          // Total traded base asset volume
-		"q": "18"              // Total traded quote asset volume
-	}
-*/
-
-const TickerEventPayloadScheme = z.object({
-	e: z.literal(tickerEventType),
-	E: z.number(),
-	s: z.string(),
-	c: z.string().regex(numericRegex),
-	o: z.string().regex(numericRegex),
-	h: z.string().regex(numericRegex),
-	l: z.string().regex(numericRegex),
-	v: z.string().regex(numericRegex),
-	q: z.string().regex(numericRegex)
-});
-
-type TickerEventData = {
-	updated: Date;
-	symbol: string;
-	closePrice: number;
-	openPrice: number;
-	highPrice: number;
-	lowPrice: number;
-	totalTradedBaseAssetVolume: number;
-	totalTradedQuoteAssetVolume: number;
-};
+import {
+	TickerDataHandler,
+	TickerEventData,
+	createTickerWsConnection,
+	fetchInitialTickerData
+} from "../lib/tickerData";
 
 type TickerContextData = {
 	data: TickerEventData | null;
@@ -50,36 +14,6 @@ type TickerContextData = {
 	isUp: boolean;
 	isDown: boolean;
 };
-
-let wsReconnectTimeoutMs = 125;
-
-function createWsConnection(
-	wsRef: React.MutableRefObject<WebSocket | null>,
-	onMessage: (evt: MessageEvent) => void
-) {
-	console.log("Creating WS connection...");
-	wsRef.current = new WebSocket(tickerWsUrl);
-
-	wsRef.current.addEventListener("open", () => {
-		console.log("Connected to WS");
-	});
-
-	wsRef.current.addEventListener("error", (err) => {
-		console.error(err);
-		wsRef.current?.close();
-	});
-
-	wsRef.current.addEventListener("close", () => {
-		console.log("WS connection closed, trying to reconnect...");
-
-		setTimeout(() => {
-			wsRef.current = null;
-			createWsConnection(wsRef, onMessage);
-		}, Math.min(10000, wsReconnectTimeoutMs *= 2));
-	});
-
-	wsRef.current.addEventListener("message", onMessage);
-}
 
 const TickerDataContext = React.createContext<TickerContextData>({
 	data: null,
@@ -90,6 +24,7 @@ const TickerDataContext = React.createContext<TickerContextData>({
 });
 
 export default function TickerData({ children }: { children: React.ReactNode }) {
+	const [initialData, setInitialData] = useState<TickerEventData | null>(null);
 	const [eventData, setEventData] = useState<TickerEventData | null>(null);
 	const [error, setError] = useState<string | null>(null);
 	const [loading, setLoading] = useState(true);
@@ -97,36 +32,28 @@ export default function TickerData({ children }: { children: React.ReactNode }) 
 	const ws = useRef<WebSocket | null>(null);
 
 	useEffect(() => {
-		const onMessage = (evt: MessageEvent) => {
-			if (evt?.origin !== tickerWsOrigin) {
-				return;
-			}
+		(async function () {
+			const data = await fetchInitialTickerData();
 
-			try {
-				const rawPayload = JSON.parse(evt.data);
-				const payload = TickerEventPayloadScheme.parse(rawPayload);
-
-				setEventData({
-					updated: new Date(payload.E),
-					symbol: payload.s,
-					closePrice: parseFloat(payload.c),
-					openPrice: parseFloat(payload.o),
-					highPrice: parseFloat(payload.h),
-					lowPrice: parseFloat(payload.l),
-					totalTradedBaseAssetVolume: parseFloat(payload.v),
-					totalTradedQuoteAssetVolume: parseFloat(payload.q)
-				});
-				setError(null);
-			} catch (e) {
-				console.error(e);
-				setError("Failed to parse ticker data");
-			} finally {
+			if (data) {
+				setInitialData(data);
 				setLoading(false);
 			}
+		})();
+
+		const onData: TickerDataHandler = (result) => {
+			if (result.success) {
+				setEventData(result.data);
+				setError(null);
+			} else {
+				setError("Invalid ticker data received");
+			}
+
+			setLoading(false);
 		};
 
 		if (!ws.current) {
-			createWsConnection(ws, onMessage);
+			createTickerWsConnection(ws, onData);
 		}
 
 		return () => {
@@ -138,11 +65,13 @@ export default function TickerData({ children }: { children: React.ReactNode }) 
 	}, []);
 
 	useEffect(() => {
-		prevPrice.current = eventData?.closePrice ?? null;
-	}, [eventData]);
+		prevPrice.current = eventData?.closePrice
+			?? initialData?.closePrice
+			?? null;
+	}, [eventData?.closePrice, initialData?.closePrice]);
 
 	const contextData = useMemo(() => ({
-		data: eventData,
+		data: eventData || initialData,
 		error,
 		loading,
 		isUp: eventData !== null &&
@@ -151,7 +80,7 @@ export default function TickerData({ children }: { children: React.ReactNode }) 
 		isDown: eventData !== null &&
 			prevPrice.current !== null &&
 			eventData.closePrice < prevPrice.current
-	}), [error, eventData, loading]);
+	}), [error, eventData, initialData, loading]);
 
 	return (
 		<TickerDataContext.Provider value={contextData}>
