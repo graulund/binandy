@@ -5,4 +5,4 @@ export const tickerWsUrl = `${tickerWsOrigin}/ws/btcusdt@miniTicker`;
 
 export const localCurrencyLocale = "da-DK";
 export const localCurrencyName = "DKK";
-export const localCurrencyRate = 6.84;
+export const localCurrencyRate = 6.9112;
