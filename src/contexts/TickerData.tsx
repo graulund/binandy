@@ -48,6 +48,36 @@ type TickerContextData = TickerEventData & {
 	isDown: boolean;
 };
 
+let wsReconnectTimeoutMs = 125;
+
+function createWsConnection(
+	wsRef: React.MutableRefObject<WebSocket | null>,
+	onMessage: (evt: MessageEvent) => void
+) {
+	console.log("Creating WS connection...");
+	wsRef.current = new WebSocket(tickerWsUrl);
+
+	wsRef.current.addEventListener("open", () => {
+		console.log("Connected to WS");
+	});
+
+	wsRef.current.addEventListener("error", (err) => {
+		console.error(err);
+		wsRef.current?.close();
+	});
+
+	wsRef.current.addEventListener("close", () => {
+		console.log("WS connection closed, trying to reconnect...");
+
+		setTimeout(() => {
+			wsRef.current = null;
+			createWsConnection(wsRef, onMessage);
+		}, Math.min(10000, wsReconnectTimeoutMs *= 2));
+	});
+
+	wsRef.current.addEventListener("message", onMessage);
+}
+
 const TickerDataContext = React.createContext<TickerContextData | null>(null);
 
 export default function TickerData({ children }: { children: React.ReactNode }) {
@@ -56,17 +86,7 @@ export default function TickerData({ children }: { children: React.ReactNode }) 
 	const ws = useRef<WebSocket | null>(null);
 
 	useEffect(() => {
-		ws.current = new WebSocket(tickerWsUrl);
-
-		ws.current.addEventListener("open", () => {
-			console.log("Connected to WS");
-		});
-
-		ws.current.addEventListener("error", (err) => {
-			console.error(err);
-		});
-
-		ws.current.addEventListener("message", (evt) => {
+		const onMessage = (evt: MessageEvent) => {
 			if (evt?.origin !== tickerWsOrigin) {
 				return;
 			}
@@ -88,10 +108,15 @@ export default function TickerData({ children }: { children: React.ReactNode }) 
 			} catch (e) {
 				console.error(e);
 			}
-		});
+		};
+
+		if (!ws.current) {
+			createWsConnection(ws, onMessage);
+		}
 
 		return () => {
 			if (ws.current) {
+				// eslint-disable-next-line react-hooks/exhaustive-deps
 				ws.current.close();
 			}
 		};
