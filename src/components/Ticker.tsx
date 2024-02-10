@@ -48,7 +48,7 @@ export default function Ticker() {
 	}
 
 	if (!price || !appData || !userDerivedData) {
-		return null;
+		return <AppStatus error="No data" />;
 	}
 	return (
 		<div>
