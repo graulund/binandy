@@ -16,7 +16,7 @@ export default function Milestones() {
 
 	const { amountIn = 0 } = appData || {};
 	const { localValueIn = 0 } = userDerivedData || {};
-	const price = tickerData?.closePrice;
+	const price = tickerData.data?.closePrice;
 
 	if (!price || !appData || !userDerivedData || amountIn <= 0) {
 		return null;

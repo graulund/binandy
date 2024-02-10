@@ -15,9 +15,10 @@ export default function Ticker() {
 	const tickerData = useContext(TickerData.Context);
 	const userDerivedData = useContext(UserDerivedData.Context);
 
+	const { error, loading } = tickerData;
 	const { amountIn = 0, amountToSpend = 0, setAppData } = appData || {};
 	const { valueIn = 0, localValueIn = 0 } = userDerivedData || {};
-	const price = tickerData?.closePrice;
+	const price = tickerData.data?.closePrice;
 
 	const handleNewAmountIn = useCallback((evt: React.ChangeEvent<HTMLInputElement>) => {
 		const newAmountIn = Number(evt.target.value);
@@ -41,10 +42,17 @@ export default function Ticker() {
 			: ""
 	), [price, localValueIn]);
 
+	if (error) {
+		return <div>Error: {error}</div>;
+	}
+
+	if (loading) {
+		return <div>Loading...</div>;
+	}
+
 	if (!price || !appData || !userDerivedData) {
 		return null;
 	}
-
 	return (
 		<div>
 			<TickerLabel>

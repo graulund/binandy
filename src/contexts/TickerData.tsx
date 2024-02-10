@@ -43,7 +43,10 @@ type TickerEventData = {
 	totalTradedQuoteAssetVolume: number;
 };
 
-type TickerContextData = TickerEventData & {
+type TickerContextData = {
+	data: TickerEventData | null;
+	error: string | null;
+	loading: boolean;
 	isUp: boolean;
 	isDown: boolean;
 };
@@ -78,10 +81,18 @@ function createWsConnection(
 	wsRef.current.addEventListener("message", onMessage);
 }
 
-const TickerDataContext = React.createContext<TickerContextData | null>(null);
+const TickerDataContext = React.createContext<TickerContextData>({
+	data: null,
+	error: null,
+	loading: true,
+	isUp: false,
+	isDown: false
+});
 
 export default function TickerData({ children }: { children: React.ReactNode }) {
 	const [eventData, setEventData] = useState<TickerEventData | null>(null);
+	const [error, setError] = useState<string | null>(null);
+	const [loading, setLoading] = useState(true);
 	const prevPrice = useRef<number | null>(null);
 	const ws = useRef<WebSocket | null>(null);
 
@@ -105,8 +116,12 @@ export default function TickerData({ children }: { children: React.ReactNode }) 
 					totalTradedBaseAssetVolume: parseFloat(payload.v),
 					totalTradedQuoteAssetVolume: parseFloat(payload.q)
 				});
+				setError(null);
 			} catch (e) {
 				console.error(e);
+				setError("Failed to parse ticker data");
+			} finally {
+				setLoading(false);
 			}
 		};
 
@@ -126,17 +141,17 @@ export default function TickerData({ children }: { children: React.ReactNode }) 
 		prevPrice.current = eventData?.closePrice ?? null;
 	}, [eventData]);
 
-	const contextData = useMemo(() => {
-		if (!eventData) {
-			return null;
-		}
-
-		return {
-			...eventData,
-			isUp: prevPrice.current !== null && eventData.closePrice > prevPrice.current,
-			isDown: prevPrice.current !== null && eventData.closePrice < prevPrice.current
-		};
-	}, [eventData]);
+	const contextData = useMemo(() => ({
+		data: eventData,
+		error,
+		loading,
+		isUp: eventData !== null &&
+			prevPrice.current !== null &&
+			eventData.closePrice > prevPrice.current,
+		isDown: eventData !== null &&
+			prevPrice.current !== null &&
+			eventData.closePrice < prevPrice.current
+	}), [error, eventData, loading]);
 
 	return (
 		<TickerDataContext.Provider value={contextData}>

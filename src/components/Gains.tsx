@@ -22,7 +22,7 @@ export default function Gains() {
 		originalValueIn = null,
 		valueIn = 0,
 	} = userDerivedData || {};
-	const price = tickerData?.closePrice;
+	const price = tickerData.data?.closePrice;
 
 	const handleNewOriginalPrice = useCallback((evt: React.ChangeEvent<HTMLInputElement>) => {
 		const newOriginalPrice = Number(evt.target.value);

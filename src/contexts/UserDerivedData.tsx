@@ -19,9 +19,9 @@ export default function UserDerivedData({ children }: { children: React.ReactNod
 
 	let value: UserDerivedDataValue | null = null;
 
-	if (appData && tickerData) {
+	if (appData && tickerData.data) {
 		const { amountIn, originalPrice } = appData;
-		const { closePrice } = tickerData;
+		const { closePrice } = tickerData.data;
 
 		value = {
 			localValueIn: amountIn * closePrice * localCurrencyRate,

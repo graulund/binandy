@@ -29,7 +29,7 @@ export default function MoneyThermometer() {
 
 	const { amountIn = 0 } = appData || {};
 	const { localValueIn = 0 } = userDerivedData || {};
-	const price = tickerData?.closePrice;
+	const price = tickerData.data?.closePrice;
 
 	useEffect(() => {
 		if (typeof window === "undefined") {
