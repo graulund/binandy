@@ -1,7 +1,10 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
+import { z } from "zod";
+
 import { tickerWsOrigin, tickerWsUrl } from "../constants";
 
 const tickerEventType = "24hrMiniTicker";
+const numericRegex = /^-?\d+(\.\d+)?$/;
 
 /*
 	{
@@ -17,7 +20,19 @@ const tickerEventType = "24hrMiniTicker";
 	}
 */
 
-type TickerEventPayload = {
+const TickerEventPayloadScheme = z.object({
+	e: z.literal(tickerEventType),
+	E: z.number(),
+	s: z.string(),
+	c: z.string().regex(numericRegex),
+	o: z.string().regex(numericRegex),
+	h: z.string().regex(numericRegex),
+	l: z.string().regex(numericRegex),
+	v: z.string().regex(numericRegex),
+	q: z.string().regex(numericRegex)
+});
+
+type TickerEventData = {
 	updated: Date;
 	symbol: string;
 	closePrice: number;
@@ -28,7 +43,7 @@ type TickerEventPayload = {
 	totalTradedQuoteAssetVolume: number;
 };
 
-type TickerContextData = TickerEventPayload & {
+type TickerContextData = TickerEventData & {
 	isUp: boolean;
 	isDown: boolean;
 };
@@ -36,7 +51,7 @@ type TickerContextData = TickerEventPayload & {
 const TickerDataContext = React.createContext<TickerContextData | null>(null);
 
 export default function TickerData({ children }: { children: React.ReactNode }) {
-	const [eventData, setEventData] = useState<TickerEventPayload | null>(null);
+	const [eventData, setEventData] = useState<TickerEventData | null>(null);
 	const prevPrice = useRef<number | null>(null);
 	const ws = useRef<WebSocket | null>(null);
 
@@ -57,31 +72,19 @@ export default function TickerData({ children }: { children: React.ReactNode }) 
 			}
 
 			try {
-				const data = JSON.parse(evt.data);
+				const rawPayload = JSON.parse(evt.data);
+				const payload = TickerEventPayloadScheme.parse(rawPayload);
 
-				if (
-					data &&
-					data.e === tickerEventType &&
-					typeof data.E === "number" &&
-					typeof data.s === "string" &&
-					typeof data.c === "string" &&
-					typeof data.o === "string" &&
-					typeof data.h === "string" &&
-					typeof data.l === "string" &&
-					typeof data.v === "string" &&
-					typeof data.q === "string"
-				) {
-					setEventData({
-						updated: new Date(data.E),
-						symbol: data.s,
-						closePrice: parseFloat(data.c),
-						openPrice: parseFloat(data.o),
-						highPrice: parseFloat(data.h),
-						lowPrice: parseFloat(data.l),
-						totalTradedBaseAssetVolume: parseFloat(data.v),
-						totalTradedQuoteAssetVolume: parseFloat(data.q)
-					});
-				}
+				setEventData({
+					updated: new Date(payload.E),
+					symbol: payload.s,
+					closePrice: parseFloat(payload.c),
+					openPrice: parseFloat(payload.o),
+					highPrice: parseFloat(payload.h),
+					lowPrice: parseFloat(payload.l),
+					totalTradedBaseAssetVolume: parseFloat(payload.v),
+					totalTradedQuoteAssetVolume: parseFloat(payload.q)
+				});
 			} catch (e) {
 				console.error(e);
 			}
