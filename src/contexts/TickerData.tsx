@@ -2,34 +2,37 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 
 import {
 	TickerDataHandler,
+	TickerDirectionInfo,
 	TickerEventData,
 	createTickerWsConnection,
-	fetchInitialTickerData
+	fetchInitialTickerData,
+	getTickerDirectionInfo
 } from "../lib/tickerData";
 
 type TickerContextData = {
 	data: TickerEventData | null;
-	error: string | null;
+	error: string | undefined;
 	loading: boolean;
-	isUp: boolean;
-	isDown: boolean;
+	direction: TickerDirectionInfo | null;
 };
 
 const TickerDataContext = React.createContext<TickerContextData>({
 	data: null,
-	error: null,
+	error: undefined,
 	loading: true,
-	isUp: false,
-	isDown: false
+	direction: null
 });
 
 export default function TickerData({ children }: { children: React.ReactNode }) {
+	/** Data from page load */
 	const [initialData, setInitialData] = useState<TickerEventData | null>(null);
+	/** Real time data from sockets connction */
 	const [eventData, setEventData] = useState<TickerEventData | null>(null);
-	const [error, setError] = useState<string | null>(null);
-	const [loading, setLoading] = useState(true);
-	const prevPrice = useRef<number | null>(null);
 	const ws = useRef<WebSocket | null>(null);
+
+	const [error, setError] = useState<string | undefined>();
+	const [loading, setLoading] = useState(true);
+	const prevPrice = useRef<number | undefined>();
 
 	useEffect(() => {
 		(async function () {
@@ -44,7 +47,7 @@ export default function TickerData({ children }: { children: React.ReactNode }) 
 		const onData: TickerDataHandler = (result) => {
 			if (result.success) {
 				setEventData(result.data);
-				setError(null);
+				setError(undefined);
 			} else {
 				setError("Invalid ticker data received");
 			}
@@ -65,21 +68,17 @@ export default function TickerData({ children }: { children: React.ReactNode }) 
 	}, []);
 
 	useEffect(() => {
-		prevPrice.current = eventData?.closePrice
-			?? initialData?.closePrice
-			?? null;
+		prevPrice.current = eventData?.closePrice ?? initialData?.closePrice;
 	}, [eventData?.closePrice, initialData?.closePrice]);
 
 	const contextData = useMemo(() => ({
 		data: eventData || initialData,
 		error,
 		loading,
-		isUp: eventData !== null &&
-			prevPrice.current !== null &&
-			eventData.closePrice > prevPrice.current,
-		isDown: eventData !== null &&
-			prevPrice.current !== null &&
-			eventData.closePrice < prevPrice.current
+		direction: getTickerDirectionInfo(
+			eventData?.closePrice,
+			prevPrice.current
+		)
 	}), [error, eventData, initialData, loading]);
 
 	return (

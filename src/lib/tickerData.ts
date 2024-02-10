@@ -16,6 +16,11 @@ export type TickerEventData = {
 export type TickerDataHandler =
 	(result: { success: true, data: TickerEventData } | { success: false }) => void;
 
+export type TickerDirectionInfo = {
+	isUp: boolean;
+	isDown: boolean;
+};
+
 const tickerEventType = "24hrMiniTicker";
 const numericRegex = /^-?\d+(\.\d+)?$/;
 
@@ -158,4 +163,19 @@ export async function fetchInitialTickerData() {
 	}
 
 	return null;
+}
+
+export function getTickerDirectionInfo(
+	currentPrice?: number,
+	prevPrice?: number
+): TickerDirectionInfo {
+	if (typeof currentPrice !== "number" || typeof prevPrice !== "number") {
+		// No comparison available
+		return { isUp: false, isDown: false };
+	}
+
+	return {
+		isUp: currentPrice > prevPrice,
+		isDown: currentPrice < prevPrice
+	};
 }

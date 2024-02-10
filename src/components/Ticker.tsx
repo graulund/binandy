@@ -51,6 +51,7 @@ export default function Ticker() {
 	if (!price || !appData || !userDerivedData) {
 		return <AppStatus error="No data" />;
 	}
+
 	return (
 		<div>
 			<TickerLabel>
@@ -59,8 +60,8 @@ export default function Ticker() {
 			<TickerValue
 				withSymbol
 				value={price}
-				isUp={tickerData?.isUp}
-				isDown={tickerData?.isDown}
+				isUp={tickerData?.direction?.isUp}
+				isDown={tickerData?.direction?.isDown}
 			/>
 			<TickerLabel>
 				<label htmlFor="amount-in-input">

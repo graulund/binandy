@@ -1,12 +1,12 @@
 import styles from "./AppStatus.module.css";
 
 type AppStatusProps = {
-	error?: string | null;
+	error?: string | undefined;
 	loading?: boolean;
 };
 
 export default function AppStatus({
-	error = null,
+	error = undefined,
 	loading = false
 }: AppStatusProps) {
 	if (error) {
