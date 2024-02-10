@@ -3,7 +3,6 @@ import clsx from "clsx";
 
 import AppData from "../contexts/AppData";
 import TickerData from "../contexts/TickerData";
-import UserDerivedData from "../contexts/UserDerivedData";
 import { formatCurrency, formatLocalCurrency } from "../lib/currencies";
 import { localCurrencyRate } from "../constants";
 
@@ -12,16 +11,16 @@ import styles from "./Milestones.module.css";
 export default function Milestones() {
 	const appData = useContext(AppData.Context);
 	const tickerData = useContext(TickerData.Context);
-	const userDerivedData = useContext(UserDerivedData.Context);
 
-	const { config } = appData;
+	const { config, derived } = appData;
 	const { amountIn = 0 } = config || {};
-	const { localValueIn = 0 } = userDerivedData || {};
 	const price = tickerData.data?.closePrice;
 
-	if (!price || !appData || !userDerivedData || amountIn <= 0) {
+	if (!price || !appData || !derived || amountIn <= 0) {
 		return null;
 	}
+
+	const { localValueIn = 0 } = derived;
 
 	// One value for each thousand DKK around the current price, 1 lower, 4 higher
 

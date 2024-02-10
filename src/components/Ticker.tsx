@@ -6,7 +6,6 @@ import TickerData from "../contexts/TickerData";
 import TickerLabel from "./TickerLabel";
 import TickerValue from "./TickerValue";
 import TickerValueInput from "./TickerValueInput";
-import UserDerivedData from "../contexts/UserDerivedData";
 import { formatLocalCurrency } from "../lib/currencies";
 import setDocTitle from "../lib/docTitle";
 import { localCurrencyRate } from "../constants";
@@ -14,12 +13,11 @@ import { localCurrencyRate } from "../constants";
 export default function Ticker() {
 	const appData = useContext(AppData.Context);
 	const tickerData = useContext(TickerData.Context);
-	const userDerivedData = useContext(UserDerivedData.Context);
 
 	const { error, loading } = tickerData;
-	const { config, setAppConfig } = appData;
+	const { config, derived, setAppConfig } = appData;
 	const { amountIn = 0, amountToSpend = 0 } = config || {};
-	const { valueIn = 0, localValueIn = 0 } = userDerivedData || {};
+	const { valueIn = 0, localValueIn = 0 } = derived || {};
 	const price = tickerData.data?.closePrice;
 
 	const handleNewAmountIn = useCallback((evt: React.ChangeEvent<HTMLInputElement>) => {
@@ -48,7 +46,7 @@ export default function Ticker() {
 		return <AppStatus error={error} loading={loading} />;
 	}
 
-	if (!price || !appData || !userDerivedData) {
+	if (!price || !appData) {
 		return <AppStatus error="No data" />;
 	}
 

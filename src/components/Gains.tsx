@@ -5,7 +5,6 @@ import TickerData from "../contexts/TickerData";
 import TickerLabel from "./TickerLabel";
 import TickerValue from "./TickerValue";
 import TickerValueInput from "./TickerValueInput";
-import UserDerivedData from "../contexts/UserDerivedData";
 
 const feeRatio = 0.001;
 const lowerFeeRatio = 0.00075;
@@ -13,16 +12,9 @@ const lowerFeeRatio = 0.00075;
 export default function Gains() {
 	const appData = useContext(AppData.Context);
 	const tickerData = useContext(TickerData.Context);
-	const userDerivedData = useContext(UserDerivedData.Context);
 
-	const { config, setAppConfig } = appData;
+	const { config, derived, setAppConfig } = appData;
 	const { amountIn = 0, originalPrice = null } = config || {};
-	const {
-		localValueIn = 0,
-		originalLocalValueIn = null,
-		originalValueIn = null,
-		valueIn = 0,
-	} = userDerivedData || {};
 	const price = tickerData.data?.closePrice;
 
 	const handleNewOriginalPrice = useCallback((evt: React.ChangeEvent<HTMLInputElement>) => {
@@ -33,9 +25,16 @@ export default function Gains() {
 		}
 	}, [setAppConfig]);
 
-	if (!price || !appData || !userDerivedData || !amountIn) {
+	if (!price || !appData || !derived || !amountIn) {
 		return null;
 	}
+
+	const {
+		localValueIn = 0,
+		originalLocalValueIn = null,
+		originalValueIn = null,
+		valueIn = 0,
+	} = derived;
 
 	return (
 		<div>

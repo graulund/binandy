@@ -1,4 +1,6 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useContext, useEffect, useMemo, useState } from "react";
+
+import TickerData from "./TickerData";
 
 import {
 	AppConfig,
@@ -6,9 +8,11 @@ import {
 	getConfigFromStorage,
 	saveConfigToStorage
 } from "../lib/appConfig";
+import getDerivedData, { DerivedValues } from "../lib/derivedData";
 
 type AppContextData = {
 	config: AppConfig | null;
+	derived: DerivedValues | null;
 };
 
 type AppContextValue = AppContextData & {
@@ -18,6 +22,7 @@ type AppContextValue = AppContextData & {
 const AppDataContext = React.createContext<AppContextValue>({} as AppContextValue);
 
 export default function AppData({ children }: { children: React.ReactNode }) {
+	const tickerData = useContext(TickerData.Context);
 	const [dataLoaded, setDataLoaded] = useState(false);
 	const [config, setConfig] = useState<AppConfig | null>(null);
 
@@ -44,8 +49,9 @@ export default function AppData({ children }: { children: React.ReactNode }) {
 
 	const contextValue = useMemo(() => ({
 		config,
+		derived: getDerivedData(config, tickerData.data),
 		setAppConfig
-	}), [config, setAppConfig]);
+	}), [config, setAppConfig, tickerData.data]);
 
 	return (
 		<AppDataContext.Provider value={contextValue}>

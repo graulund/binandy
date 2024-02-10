@@ -3,7 +3,6 @@ import { useContext, useEffect, useState } from "react";
 
 import AppData from "../contexts/AppData";
 import TickerData from "../contexts/TickerData";
-import UserDerivedData from "../contexts/UserDerivedData";
 import { formatCurrency, formatLocalCurrency } from "../lib/currencies";
 import { localCurrencyRate } from "../constants";
 
@@ -24,12 +23,9 @@ function getHundredFromValue(value: number) {
 export default function MoneyThermometer() {
 	const appData = useContext(AppData.Context);
 	const tickerData = useContext(TickerData.Context);
-	const userDerivedData = useContext(UserDerivedData.Context);
 	const [viewportHeight, setViewportHeight] = useState(0);
-
-	const { config } = appData;
+	const { config, derived } = appData;
 	const { amountIn = 0 } = config || {};
-	const { localValueIn = 0 } = userDerivedData || {};
 	const price = tickerData.data?.closePrice;
 
 	useEffect(() => {
@@ -49,10 +45,11 @@ export default function MoneyThermometer() {
 		};
 	}, []);
 
-	if (!price || !appData || !userDerivedData || amountIn <= 0) {
+	if (!price || !appData || !derived || amountIn <= 0) {
 		return null;
 	}
 
+	const { localValueIn = 0 } = derived;
 	const currentHundred = getHundredFromValue(localValueIn);
 	const hundreds = [];
 
