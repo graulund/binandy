@@ -4,7 +4,7 @@ import clsx from "clsx";
 import AppData from "../contexts/AppData";
 import TickerData from "../contexts/TickerData";
 import { formatCurrency, formatLocalCurrency } from "../lib/currencies";
-import { localCurrencyRate } from "../constants";
+import { getThousandFromValue } from "../lib/numbers";
 
 import styles from "./Milestones.module.css";
 
@@ -20,11 +20,14 @@ export default function Milestones() {
 		return null;
 	}
 
-	const { localValueIn = 0 } = derived;
+	const {
+		getNeededPriceForDesiredLocalHoldings,
+		localValueIn = 0
+	} = derived;
 
 	// One value for each thousand DKK around the current price, 1 lower, 4 higher
 
-	const currentThousand = Math.floor(localValueIn / 1000) * 1000;
+	const currentThousand = getThousandFromValue(localValueIn);
 
 	const localMilestoneValues = [
 		currentThousand,
@@ -41,7 +44,7 @@ export default function Milestones() {
 			</div>
 			<div className={styles.milestones}>
 				{localMilestoneValues.map((value) => {
-					const goalPrice = value / localCurrencyRate / amountIn;
+					const goalPrice = getNeededPriceForDesiredLocalHoldings(value);
 					const difference = price - goalPrice;
 
 					const differenceClassName = clsx(styles.difference, {

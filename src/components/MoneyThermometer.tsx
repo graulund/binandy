@@ -4,7 +4,7 @@ import { useContext, useEffect, useState } from "react";
 import AppData from "../contexts/AppData";
 import TickerData from "../contexts/TickerData";
 import { formatCurrency, formatLocalCurrency } from "../lib/currencies";
-import { localCurrencyRate } from "../constants";
+import { getHundredFromValue } from "../lib/numbers";
 
 import styles from "./MoneyThermometer.module.css";
 
@@ -14,10 +14,6 @@ function getViewportPositionFromValue(
 	viewportHeight: number
 ) {
 	return viewportHeight - (viewportHeight / 2 + (value - midValue));
-}
-
-function getHundredFromValue(value: number) {
-	return Math.floor(value / 100) * 100;
 }
 
 export default function MoneyThermometer() {
@@ -49,7 +45,11 @@ export default function MoneyThermometer() {
 		return null;
 	}
 
-	const { localValueIn = 0 } = derived;
+	const {
+		getNeededPriceForDesiredLocalHoldings,
+		localValueIn = 0
+	} = derived;
+
 	const currentHundred = getHundredFromValue(localValueIn);
 	const hundreds = [];
 
@@ -130,7 +130,9 @@ export default function MoneyThermometer() {
 							{formatLocalCurrency(value)}
 						</strong>
 						<span className={styles.price}>
-							{formatCurrency(value / localCurrencyRate / amountIn)} per BTC
+							{formatCurrency(
+								getNeededPriceForDesiredLocalHoldings(value)
+							)} per BTC
 						</span>
 					</div>
 				))}

@@ -8,7 +8,6 @@ import TickerValue from "./TickerValue";
 import TickerValueInput from "./TickerValueInput";
 import { formatLocalCurrency } from "../lib/currencies";
 import setDocTitle from "../lib/docTitle";
-import { localCurrencyRate } from "../constants";
 
 export default function Ticker() {
 	const appData = useContext(AppData.Context);
@@ -17,7 +16,7 @@ export default function Ticker() {
 	const { error, loading } = tickerData;
 	const { config, derived, setAppConfig } = appData;
 	const { amountIn = 0, amountToSpend = 0 } = config || {};
-	const { valueIn = 0, localValueIn = 0 } = derived || {};
+	const { holdings = 0, localHoldings = 0, maxBuy = 0 } = derived || {};
 	const price = tickerData.data?.closePrice;
 
 	const handleNewAmountIn = useCallback((evt: React.ChangeEvent<HTMLInputElement>) => {
@@ -37,10 +36,10 @@ export default function Ticker() {
 	}, [setAppConfig]);
 
 	useEffect(() => setDocTitle(
-		price && localValueIn && localValueIn > 0
-			? formatLocalCurrency(localValueIn)
+		price && localHoldings && localHoldings > 0
+			? formatLocalCurrency(localHoldings)
 			: ""
-	), [price, localValueIn]);
+	), [price, localHoldings]);
 
 	if (error || loading) {
 		return <AppStatus error={error} loading={loading} />;
@@ -86,20 +85,19 @@ export default function Ticker() {
 					<TickerLabel>
 						Your holdings:
 					</TickerLabel>
-					<TickerValue value={valueIn + amountToSpend} />
+					<TickerValue value={holdings} />
 					<TickerLabel>
 						Which is:
 					</TickerLabel>
-					{/* TODO: Move this calculation to a context */}
-					<TickerValue isLocalValue value={localValueIn + localCurrencyRate * amountToSpend} />
+					<TickerValue isLocalValue value={localHoldings} />
 				</>
 			)}
-			{amountToSpend > 0 && (
+			{maxBuy > 0 && (
 				<>
 					<TickerLabel>
 						You would be able to buy this amount of BTC:
 					</TickerLabel>
-					{amountToSpend / price}
+					{maxBuy}
 				</>
 			)}
 		</div>

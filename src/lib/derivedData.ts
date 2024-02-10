@@ -1,3 +1,5 @@
+import memoizeOne from "memoize-one";
+
 import { localCurrencyRate, transactionFeeLevels } from "../constants";
 import { AppConfig } from "./appConfig";
 import { TickerEventData } from "./tickerData";
@@ -10,13 +12,45 @@ type GainsWithFee = {
 export type DerivedValues = {
 	exitGains: GainsWithFee[] | null;
 	gains: number | null;
+	getNeededPriceForDesiredHoldings: (desiredHoldings: number) => number;
+	getNeededPriceForDesiredLocalHoldings: (desiredLocalHoldings: number) => number;
+	holdings: number;
+	localAmountToSpend: number;
 	localExitGains: GainsWithFee[] | null;
 	localGains: number | null;
+	localHoldings: number;
 	localValueIn: number;
+	maxBuy: number;
 	originalLocalValueIn: number | null;
 	originalValueIn: number | null;
 	valueIn: number;
 };
+
+function createNeededPriceCalculator(
+	currentAmountIn: number,
+	currentAmountToSpend: number
+) {
+	return function getNeededPriceForDesiredHoldings(
+		desiredHoldings: number
+	) {
+		return (desiredHoldings - currentAmountToSpend) / currentAmountIn;
+	}
+}
+
+function createNeededPriceLocalCalculator(
+	currentAmountIn: number,
+	currentAmountToSpend: number
+) {
+	return function getNeededPriceForDesiredLocalHoldings(
+		desiredLocalHoldings: number
+	) {
+		return (desiredLocalHoldings / localCurrencyRate - currentAmountToSpend)
+			/ currentAmountIn;
+	}
+}
+
+const memoizedCreateNeededPriceCalculator = memoizeOne(createNeededPriceCalculator);
+const memoizedCreateNeededPriceLocalCalculator = memoizeOne(createNeededPriceLocalCalculator);
 
 export default function getDerivedData(
 	config: AppConfig | null,
@@ -26,23 +60,37 @@ export default function getDerivedData(
 		return null;
 	}
 
-	const { amountIn, originalPrice } = config;
+	const { amountIn, amountToSpend, originalPrice } = config;
 	const { closePrice } = tickerData;
+
+	const valueIn = amountIn * closePrice;
+	const localValueIn = valueIn * localCurrencyRate;
+	const localAmountToSpend = amountToSpend * localCurrencyRate;
 
 	let value: DerivedValues = {
 		exitGains: null,
 		gains: null,
+		getNeededPriceForDesiredHoldings: memoizedCreateNeededPriceCalculator(
+			amountIn,
+			amountToSpend
+		),
+		getNeededPriceForDesiredLocalHoldings: memoizedCreateNeededPriceLocalCalculator(
+			amountIn,
+			amountToSpend
+		),
+		holdings: valueIn + amountToSpend,
+		localAmountToSpend,
 		localExitGains: null,
 		localGains: null,
-		localValueIn: amountIn * closePrice * localCurrencyRate,
+		localHoldings: localValueIn + localAmountToSpend,
+		localValueIn,
+		maxBuy: amountToSpend / closePrice,
 		originalLocalValueIn: null,
 		originalValueIn: null,
-		valueIn: amountIn * closePrice,
+		valueIn
 	};
 
 	if (originalPrice && originalPrice > 0) {
-		const { localValueIn, valueIn } = value;
-
 		const originalValueIn = originalPrice * amountIn;
 		const originalLocalValueIn = originalPrice * amountIn * localCurrencyRate;
 
@@ -77,6 +125,7 @@ export default function getDerivedData(
 			originalValueIn
 		};
 	}
+
 
 	return value;
 }
