@@ -6,9 +6,6 @@ import TickerLabel from "./TickerLabel";
 import TickerValue from "./TickerValue";
 import TickerValueInput from "./TickerValueInput";
 
-const feeRatio = 0.001;
-const lowerFeeRatio = 0.00075;
-
 export default function Gains() {
 	const appData = useContext(AppData.Context);
 	const tickerData = useContext(TickerData.Context);
@@ -30,10 +27,9 @@ export default function Gains() {
 	}
 
 	const {
-		localValueIn = 0,
-		originalLocalValueIn = null,
-		originalValueIn = null,
-		valueIn = 0,
+		gains = null,
+		localExitGains = null,
+		localGains = null
 	} = derived;
 
 	return (
@@ -49,19 +45,16 @@ export default function Gains() {
 				onChange={handleNewOriginalPrice}
 			/>
 			{
-				originalPrice &&
-				originalPrice > 0 &&
-				originalValueIn &&
-				originalValueIn > 0 &&
-				originalLocalValueIn &&
-				originalLocalValueIn > 0 && (
+				gains !== null &&
+				localExitGains !== null &&
+				localGains !== null && (
 					<>
 						<TickerLabel>
 							Your gains:
 						</TickerLabel>
 						<TickerValue
 							isDifference
-							value={valueIn - originalValueIn}
+							value={gains}
 						/>
 						<TickerLabel>
 							Which is:
@@ -69,24 +62,18 @@ export default function Gains() {
 						<TickerValue
 							isDifference
 							isLocalValue
-							value={localValueIn - originalLocalValueIn}
+							value={localGains}
 						/>
-						<TickerLabel>
-							If you exited now, you would get (after 0.75% fee):
-						</TickerLabel>
-						<TickerValue
-							isDifference
-							isLocalValue
-							value={localValueIn - originalLocalValueIn - (localValueIn * lowerFeeRatio)}
-						/>
-						<TickerLabel>
-							If you exited now, you would get (after 1% fee):
-						</TickerLabel>
-						<TickerValue
-							isDifference
-							isLocalValue
-							value={localValueIn - originalLocalValueIn - (localValueIn * feeRatio)}
-						/>
+						{localExitGains.map(({ feeLevel, gainsPostFee }) => (
+							<TickerLabel key={feeLevel}>
+								If you exited now, you would get (after {feeLevel * 100}% fee):
+								<TickerValue
+									isDifference
+									isLocalValue
+									value={gainsPostFee}
+								/>
+							</TickerLabel>
+						))}
 					</>
 				)
 			}
