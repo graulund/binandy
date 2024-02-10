@@ -1,4 +1,4 @@
-import { useCallback, useContext, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect } from "react";
 
 import AppData from "../contexts/AppData";
 import TickerData from "../contexts/TickerData";
