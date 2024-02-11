@@ -3,6 +3,7 @@ import clsx from "clsx";
 
 import AppData from "../contexts/AppData";
 import TickerData from "../contexts/TickerData";
+import TickerLabel from "./TickerLabel";
 import { formatCurrency, formatLocalCurrency } from "../lib/formatNumbers";
 import { getThousandFromValue } from "../lib/numbers";
 
@@ -13,7 +14,7 @@ export default function Milestones() {
 	const tickerData = useContext(TickerData.Context);
 
 	const { config, derived } = appData;
-	const { amountIn = 0 } = config || {};
+	const { amountIn = 0, subtle = false } = config || {};
 	const price = tickerData.data?.closePrice;
 
 	if (!price || !appData || !derived || amountIn <= 0) {
@@ -37,12 +38,16 @@ export default function Milestones() {
 		currentThousand + 4000
 	];
 
+	const className = clsx(styles.milestones, {
+		[styles.subtleMilestones]: subtle
+	});
+
 	return (
-		<div className={styles.wrapper}>
-			<div className={styles.label}>
+		<div>
+			<TickerLabel size="small">
 				Nearby milestones:
-			</div>
-			<div className={styles.milestones}>
+			</TickerLabel>
+			<div className={className}>
 				{localMilestoneValues.map((value) => {
 					const goalPrice = getNeededPriceForDesiredLocalHoldings(value);
 					const difference = price - goalPrice;
@@ -54,9 +59,9 @@ export default function Milestones() {
 
 					return (
 						<div className={styles.milestone} key={value}>
-							<div className={styles.label}>
+							<TickerLabel size="small">
 								{formatLocalCurrency(value)} at:
-							</div>
+							</TickerLabel>
 							<div className={styles.value}>
 								{formatCurrency(goalPrice)}
 							</div>

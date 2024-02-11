@@ -1,10 +1,3 @@
-.label {
-	/* TODO: Make this component generic */
-	font-size: 1.5rem;
-	color: var(--color-gray-60);
-	font-weight: bold;
-}
-
 .milestones {
 	display: flex;
 	justify-content: space-between;
@@ -22,31 +15,48 @@
 	text-align: center;
 }
 
-.milestone .label {
-	font-size: 1.5rem;
+.value, .difference {
+	font-size: 2rem;
+	font-weight: bold;
+	font-feature-settings: "tnum";
 }
 
 .value {
-	font-size: 2rem;
-	font-weight: bold;
-	font-feature-settings: "tnum";
 	margin: .5rem 0;
 }
 
-.difference {
-	font-size: 2rem;
-	font-weight: bold;
-	font-feature-settings: "tnum";
+.subtleMilestones .value,
+.subtleMilestones .difference {
+	font-size: 1rem !important;
 }
 
 @media (min-width: 105rem) {
-	.label,
-	.milestone .label {
-		font-size: 2rem;
+	.milestone:not(.subtleMilestones) .label {
+		font-size: 2rem !important;
 	}
 
 	.value, .difference {
 		font-size: 3rem;
+	}
+}
+
+@media (max-width: 35rem) {
+	.milestones {
+		gap: 1.75rem;
+	}
+
+	.value, .difference {
+		font-size: 1.5rem;
+	}
+}
+
+@media (max-width: 25rem) {
+	.milestones {
+		gap: 1.5rem;
+	}
+
+	.value, .difference {
+		font-size: 1.25rem;
 	}
 }
 

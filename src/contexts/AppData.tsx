@@ -50,7 +50,7 @@ export default function AppData({ children }: { children: React.ReactNode }) {
 		})();
 
 		const config = getConfigFromStorage();
-		setConfig(config);
+		setConfig({ ...defaultAppConfig, ...(config || {}) });
 		setDataLoaded(true);
 	}, []);
 

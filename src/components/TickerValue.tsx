@@ -1,6 +1,12 @@
 import clsx from "clsx";
 
-import { formatCryptoAmount, formatCurrency, formatLocalCurrency } from "../lib/formatNumbers";
+import useSubtle from "../hooks/useSubtle";
+
+import {
+	formatCryptoAmount,
+	formatCurrency,
+	formatLocalCurrency
+} from "../lib/formatNumbers";
 
 import styles from "./TickerValue.module.css";
 
@@ -41,6 +47,8 @@ export default function TickerValue({
 	value,
 	withSymbol
 }: TickerValueProps) {
+	const subtle = useSubtle();
+
 	const formattedValue = getFormattedValue({
 		isCryptoValue,
 		isLocalValue,
@@ -48,6 +56,7 @@ export default function TickerValue({
 	});
 
 	const className = clsx(styles.value, {
+		[styles.subtleValue]: subtle,
 		[styles.smallValue]: size === "small",
 		[styles.valueWithSymbol]: withSymbol,
 		[styles.differenceAbove]: isDifference && value > 0,

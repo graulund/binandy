@@ -4,15 +4,17 @@ export type AppConfig = {
 	amountIn: number;
 	amountToSpend: number;
 	originalPrice: number | null;
+	subtle: boolean;
 };
 
 export const defaultAppConfig = {
 	amountIn: 0,
 	amountToSpend: 0,
-	originalPrice: null
+	originalPrice: null,
+	subtle: false
 };
 
-export function getConfigFromStorage(): AppConfig | null {
+export function getConfigFromStorage(): Partial<AppConfig> | null {
 	try {
 		const storedData = localStorage.getItem(appConfigStorageName);
 

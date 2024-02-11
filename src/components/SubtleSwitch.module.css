@@ -1,0 +1,20 @@
+.switch {
+	position: fixed;
+	top: 1rem;
+	left: 1rem;
+	width: 1rem;
+	height: 1rem;
+	appearance: none;
+	-webkit-appearance: none;
+	overflow: hidden;
+	line-height: 1rem;
+	border: 1px solid var(--color-gray-80);
+	background-color: var(--color-background);
+	border-radius: 1rem;
+	color: transparent;
+	cursor: pointer;
+}
+
+.switch.switchOn {
+	background-color: var(--color-gray-80);
+}

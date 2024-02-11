@@ -1,3 +1,7 @@
+import clsx from "clsx";
+
+import useSubtle from "../hooks/useSubtle";
+
 import styles from "./TickerValueInput.module.css";
 
 type TickerValueInputProps = {
@@ -11,8 +15,14 @@ export default function TickerValueInput({
 	onChange,
 	value
 }: TickerValueInputProps) {
+	const subtle = useSubtle();
+
+	const className = clsx(styles.valueInput, {
+		[styles.subtleInput]: subtle
+	});
+
 	return (
-		<div className={styles.valueInput}>
+		<div className={className}>
 			<input
 				type="number"
 				id={id}

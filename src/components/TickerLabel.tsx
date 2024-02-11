@@ -1,5 +1,7 @@
 import clsx from "clsx";
 
+import useSubtle from "../hooks/useSubtle";
+
 import styles from "./TickerLabel.module.css";
 
 type TickerLabelProps = {
@@ -8,8 +10,11 @@ type TickerLabelProps = {
 };
 
 export default function TickerLabel({ children, size }: TickerLabelProps) {
+	const subtle = useSubtle();
+
 	const className = clsx(styles.label, {
-		[styles.smallLabel]: size === "small"
+		[styles.smallLabel]: size === "small",
+		[styles.subtleLabel]: subtle
 	});
 
 	return <div className={className}>{children}</div>;

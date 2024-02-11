@@ -8,6 +8,10 @@
 	font-size: 1.5rem;
 }
 
+.label.subtleLabel {
+	font-size: 1rem !important;
+}
+
 @media (max-width: 35rem) {
 	.label {
 		font-size: 1.5rem;
