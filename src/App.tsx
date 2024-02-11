@@ -1,4 +1,5 @@
 import AppData from "./contexts/AppData";
+import DocTitleUpdater from "./components/DocTitleUpdater";
 import Gains from "./components/Gains";
 import Milestones from "./components/Milestones";
 import MoneyThermometer from "./components/MoneyThermometer";
@@ -16,6 +17,7 @@ export default function App() {
 					<Gains />
 					<Milestones />
 					<MoneyThermometer />
+					<DocTitleUpdater />
 				</AppData>
 			</TickerData>
 		</div>

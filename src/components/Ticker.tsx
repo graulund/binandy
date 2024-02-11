@@ -1,4 +1,4 @@
-import { useCallback, useContext, useEffect } from "react";
+import { useCallback, useContext } from "react";
 
 import AppData from "../contexts/AppData";
 import AppStatus from "./AppStatus";
@@ -6,8 +6,6 @@ import TickerData from "../contexts/TickerData";
 import TickerLabel from "./TickerLabel";
 import TickerValue from "./TickerValue";
 import TickerValueInput from "./TickerValueInput";
-import setDocTitle from "../lib/docTitle";
-import { formatLocalCurrency } from "../lib/formatNumbers";
 
 export default function Ticker() {
 	const appData = useContext(AppData.Context);
@@ -34,12 +32,6 @@ export default function Ticker() {
 			setAppConfig({ amountToSpend: newAmountToSpend });
 		}
 	}, [setAppConfig]);
-
-	useEffect(() => setDocTitle(
-		price && localHoldings && localHoldings > 0
-			? formatLocalCurrency(localHoldings)
-			: ""
-	), [price, localHoldings]);
 
 	if (error || loading) {
 		return <AppStatus error={error} loading={loading} />;
