@@ -1,0 +1,13 @@
+.container {
+	margin: 2rem 0;
+}
+
+.primary,
+.secondary {
+	color: var(--color-gray-60);
+}
+
+.secondary {
+	font-size: .875rem;
+	margin-top: .25rem;
+}
