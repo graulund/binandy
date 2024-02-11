@@ -3,7 +3,7 @@ import clsx from "clsx";
 
 import AppData from "../contexts/AppData";
 import TickerData from "../contexts/TickerData";
-import { formatCurrency, formatLocalCurrency } from "../lib/formatCurrencies";
+import { formatCurrency, formatLocalCurrency } from "../lib/formatNumbers";
 import { getThousandFromValue } from "../lib/numbers";
 
 import styles from "./Milestones.module.css";

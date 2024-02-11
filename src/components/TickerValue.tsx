@@ -1,10 +1,11 @@
 import clsx from "clsx";
 
-import { formatCurrency, formatLocalCurrency } from "../lib/formatCurrencies";
+import { formatCryptoAmount, formatCurrency, formatLocalCurrency } from "../lib/formatNumbers";
 
 import styles from "./TickerValue.module.css";
 
 type TickerValueProps = {
+	isCryptoValue?: boolean;
 	isDifference?: boolean;
 	isDown?: boolean;
 	isLocalValue?: boolean;
@@ -14,7 +15,24 @@ type TickerValueProps = {
 	withSymbol?: boolean;
 };
 
+function getFormattedValue({
+	isCryptoValue,
+	isLocalValue,
+	value
+}: Pick<TickerValueProps, "isCryptoValue" | "isLocalValue" | "value">) {
+	if (isCryptoValue) {
+		return formatCryptoAmount(value);
+	}
+
+	if (isLocalValue) {
+		return formatLocalCurrency(value);
+	}
+
+	return formatCurrency(value);
+}
+
 export default function TickerValue({
+	isCryptoValue,
 	isDifference,
 	isDown,
 	isLocalValue,
@@ -23,9 +41,11 @@ export default function TickerValue({
 	value,
 	withSymbol
 }: TickerValueProps) {
-	const formattedValue = isLocalValue
-		? formatLocalCurrency(value)
-		: formatCurrency(value);
+	const formattedValue = getFormattedValue({
+		isCryptoValue,
+		isLocalValue,
+		value
+	});
 
 	const className = clsx(styles.value, {
 		[styles.smallValue]: size === "small",

@@ -19,3 +19,7 @@ export function formatCurrency(amount: number) {
 export function formatLocalCurrency(localAmount: number) {
 	return localCurrencyFormatter.format(localAmount);
 }
+
+export function formatCryptoAmount(amount: number) {
+	return amount.toFixed(8);
+}

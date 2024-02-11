@@ -7,7 +7,7 @@ import TickerLabel from "./TickerLabel";
 import TickerValue from "./TickerValue";
 import TickerValueInput from "./TickerValueInput";
 import setDocTitle from "../lib/docTitle";
-import { formatLocalCurrency } from "../lib/formatCurrencies";
+import { formatLocalCurrency } from "../lib/formatNumbers";
 
 export default function Ticker() {
 	const appData = useContext(AppData.Context);
@@ -97,7 +97,7 @@ export default function Ticker() {
 					<TickerLabel>
 						You would be able to buy this amount of BTC:
 					</TickerLabel>
-					{maxBuy}
+					<TickerValue size="small" isCryptoValue value={maxBuy} />
 				</>
 			)}
 		</div>

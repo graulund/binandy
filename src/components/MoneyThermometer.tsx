@@ -3,7 +3,7 @@ import { useContext, useEffect, useState } from "react";
 
 import AppData from "../contexts/AppData";
 import TickerData from "../contexts/TickerData";
-import { formatCurrency, formatLocalCurrency } from "../lib/formatCurrencies";
+import { formatCurrency, formatLocalCurrency } from "../lib/formatNumbers";
 import { getHundredFromValue } from "../lib/numbers";
 
 import styles from "./MoneyThermometer.module.css";
