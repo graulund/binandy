@@ -7,6 +7,8 @@ import TickerLabel from "./TickerLabel";
 import TickerValue from "./TickerValue";
 import TickerValueInput from "./TickerValueInput";
 
+import styles from "./Ticker.module.css";
+
 export default function Ticker() {
 	const appData = useContext(AppData.Context);
 	const tickerData = useContext(TickerData.Context);
@@ -52,26 +54,32 @@ export default function Ticker() {
 				isUp={tickerData?.direction?.isUp}
 				isDown={tickerData?.direction?.isDown}
 			/>
-			<TickerLabel>
-				<label htmlFor="amount-in-input">
-					Your BTC amount in:
-				</label>
-			</TickerLabel>
-			<TickerValueInput
-				id="amount-in-input"
-				value={amountIn}
-				onChange={handleNewAmountIn}
-			/>
-			<TickerLabel>
-				<label htmlFor="usdt-amount">
-					Your USDT to spend:
-				</label>
-			</TickerLabel>
-			<TickerValueInput
-				id="usdt-amount"
-				value={amountToSpend}
-				onChange={handleNewAmountToSpend}
-			/>
+			<div className={styles.inputs}>
+				<div className={styles.input}>
+					<TickerLabel size="small">
+						<label htmlFor="amount-in-input">
+							Your BTC amount in:
+						</label>
+					</TickerLabel>
+					<TickerValueInput
+						id="amount-in-input"
+						value={amountIn}
+						onChange={handleNewAmountIn}
+					/>
+				</div>
+				<div className={styles.input}>
+					<TickerLabel size="small">
+						<label htmlFor="usdt-amount">
+							Your USDT to spend:
+						</label>
+					</TickerLabel>
+					<TickerValueInput
+						id="usdt-amount"
+						value={amountToSpend}
+						onChange={handleNewAmountToSpend}
+					/>
+				</div>
+			</div>
 			{amountIn > 0 && (
 				<>
 					<TickerLabel>

@@ -1,0 +1,21 @@
+.inputs {
+	display: flex;
+	justify-content: center;
+	gap: 1rem;
+}
+
+.inputs .input {
+	max-width: 18.75rem;
+}
+
+@media (max-width: 35rem) {
+	.inputs .input {
+		max-width: 12.5rem;
+	}
+}
+
+@media (max-width: 25rem) {
+	.inputs .input {
+		max-width: 9.375rem;
+	}
+}

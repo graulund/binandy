@@ -1,4 +1,4 @@
-import { useCallback, useContext } from "react";
+import React, { useCallback, useContext } from "react";
 
 import AppData from "../contexts/AppData";
 import TickerData from "../contexts/TickerData";
@@ -65,15 +65,17 @@ export default function Gains() {
 							value={localGains}
 						/>
 						{localExitGains.map(({ feeLevel, gainsPostFee }) => (
-							<TickerLabel key={feeLevel}>
-								If you exited now, you would get (after {feeLevel * 100}% fee):
+							<React.Fragment key={feeLevel}>
+								<TickerLabel size="small">
+									If you exited now, you would get (after {feeLevel * 100}% fee):
+								</TickerLabel>
 								<TickerValue
 									isDifference
 									isLocalValue
 									size="small"
 									value={gainsPostFee}
 								/>
-							</TickerLabel>
+							</React.Fragment>
 						))}
 					</>
 				)

@@ -4,14 +4,26 @@
 	font-weight: bold;
 }
 
+.label.smallLabel {
+	font-size: 1.5rem;
+}
+
 @media (max-width: 35rem) {
 	.label {
 		font-size: 1.5rem;
+	}
+
+	.label.smallLabel {
+		font-size: 1.25rem;
 	}
 }
 
 @media (max-width: 25rem) {
 	.label {
 		font-size: 1.25rem;
+	}
+
+	.label.smallLabel {
+		font-size: 1rem;
 	}
 }
