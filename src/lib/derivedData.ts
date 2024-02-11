@@ -1,8 +1,8 @@
 import memoizeOne from "memoize-one";
 
-import { localCurrencyRate, transactionFeeLevels } from "../constants";
 import { AppConfig } from "./appConfig";
 import { TickerEventData } from "./tickerData";
+import { transactionFeeLevels } from "../constants";
 
 type GainsWithFee = {
 	gainsPostFee: number;
@@ -39,7 +39,8 @@ function createNeededPriceCalculator(
 
 function createNeededPriceLocalCalculator(
 	currentAmountIn: number,
-	currentAmountToSpend: number
+	currentAmountToSpend: number,
+	localCurrencyRate: number
 ) {
 	return function getNeededPriceForDesiredLocalHoldings(
 		desiredLocalHoldings: number
@@ -53,6 +54,7 @@ const memoizedCreateNeededPriceCalculator = memoizeOne(createNeededPriceCalculat
 const memoizedCreateNeededPriceLocalCalculator = memoizeOne(createNeededPriceLocalCalculator);
 
 export default function getDerivedData(
+	localCurrencyRate: number,
 	config: AppConfig | null,
 	tickerData: TickerEventData | null
 ): DerivedValues | null {
@@ -76,7 +78,8 @@ export default function getDerivedData(
 		),
 		getNeededPriceForDesiredLocalHoldings: memoizedCreateNeededPriceLocalCalculator(
 			amountIn,
-			amountToSpend
+			amountToSpend,
+			localCurrencyRate
 		),
 		holdings: valueIn + amountToSpend,
 		localAmountToSpend,

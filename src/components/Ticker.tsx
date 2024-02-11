@@ -6,8 +6,8 @@ import TickerData from "../contexts/TickerData";
 import TickerLabel from "./TickerLabel";
 import TickerValue from "./TickerValue";
 import TickerValueInput from "./TickerValueInput";
-import { formatLocalCurrency } from "../lib/currencies";
 import setDocTitle from "../lib/docTitle";
+import { formatLocalCurrency } from "../lib/formatCurrencies";
 
 export default function Ticker() {
 	const appData = useContext(AppData.Context);

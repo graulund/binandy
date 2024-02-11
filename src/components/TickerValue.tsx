@@ -1,6 +1,6 @@
 import clsx from "clsx";
 
-import { formatCurrency, formatLocalCurrency } from "../lib/currencies";
+import { formatCurrency, formatLocalCurrency } from "../lib/formatCurrencies";
 
 import styles from "./TickerValue.module.css";
 
