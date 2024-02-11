@@ -9,6 +9,7 @@ type TickerValueProps = {
 	isDown?: boolean;
 	isLocalValue?: boolean;
 	isUp?: boolean;
+	size?: "normal" | "small";
 	value: number;
 	withSymbol?: boolean;
 };
@@ -18,6 +19,7 @@ export default function TickerValue({
 	isDown,
 	isLocalValue,
 	isUp,
+	size,
 	value,
 	withSymbol
 }: TickerValueProps) {
@@ -26,6 +28,7 @@ export default function TickerValue({
 		: formatCurrency(value);
 
 	const className = clsx(styles.value, {
+		[styles.smallValue]: size === "small",
 		[styles.valueWithSymbol]: withSymbol,
 		[styles.differenceAbove]: isDifference && value > 0,
 		[styles.differenceBelow]: isDifference && value < 0

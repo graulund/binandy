@@ -70,6 +70,7 @@ export default function Gains() {
 								<TickerValue
 									isDifference
 									isLocalValue
+									size="small"
 									value={gainsPostFee}
 								/>
 							</TickerLabel>

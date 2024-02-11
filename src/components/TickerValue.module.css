@@ -5,9 +5,17 @@
 	margin: 0 0 1.5rem;
 }
 
+.value.smallValue {
+	font-size: 2rem;
+}
+
 @media (max-width: 35rem) {
 	.value {
 		font-size: 3rem;
+	}
+
+	.value.smallValue {
+		font-size: 1.5rem;
 	}
 }
 
@@ -15,17 +23,29 @@
 	.value {
 		font-size: 2.5rem;
 	}
+
+	.value.smallValue {
+		font-size: 1.25rem;
+	}
 }
 
 @media (min-width: 70rem) {
 	.value {
 		font-size: 6rem;
 	}
+
+	.value.smallValue {
+		font-size: 3rem;
+	}
 }
 
 @media (min-width: 90rem) {
 	.value {
 		font-size: 8rem;
+	}
+
+	.value.smallValue {
+		font-size: 4rem;
 	}
 }
 
