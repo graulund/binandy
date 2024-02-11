@@ -32,9 +32,16 @@
 	z-index: 2;
 }
 
+@media (prefers-color-scheme: dark) {
+	.currentValue {
+		background-color: rgba(0, 0, 0, 0.8);
+		border-top-color: #c00;
+	}
+}
+
 .marker {
-	border-top: 1px solid #ccc;
-	color: #999;
+	border-top: 1px solid var(--color-gray-80);
+	color: var(--color-gray-60);
 	z-index: 1;
 }
 
@@ -43,5 +50,5 @@
 }
 
 .currentValue .price {
-	color: #666;
+	color: var(--color-gray-40);
 }

@@ -74,17 +74,17 @@
 }
 
 .arrowUp {
-	color: var(--up-color);
+	color: var(--color-up);
 }
 
 .arrowDown {
-	color: var(--down-color);
+	color: var(--color-down);
 }
 
 .differenceAbove {
-	color: var(--up-color);
+	color: var(--color-up);
 }
 
 .differenceBelow {
-	color: var(--down-color);
+	color: var(--color-down);
 }

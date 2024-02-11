@@ -1,7 +1,7 @@
 .label {
 	/* TODO: Make this component generic */
 	font-size: 1.5rem;
-	color: #999;
+	color: var(--color-gray-60);
 	font-weight: bold;
 }
 
@@ -51,9 +51,9 @@
 }
 
 .differenceAbove {
-	color: var(--up-color);
+	color: var(--color-up);
 }
 
 .differenceBelow {
-	color: var(--down-color);
+	color: var(--color-down);
 }
