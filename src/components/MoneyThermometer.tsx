@@ -46,7 +46,7 @@ export default function MoneyThermometer() {
 	}
 
 	const {
-		getNeededPriceForDesiredLocalHoldings,
+		getRequiredPriceForDesiredLocalHoldings,
 		localHoldings = 0
 	} = derived;
 
@@ -131,7 +131,7 @@ export default function MoneyThermometer() {
 						</strong>
 						<span className={styles.price}>
 							{formatCurrency(
-								getNeededPriceForDesiredLocalHoldings(value)
+								getRequiredPriceForDesiredLocalHoldings(value)
 							)} per BTC
 						</span>
 					</div>

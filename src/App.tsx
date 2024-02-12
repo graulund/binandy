@@ -1,4 +1,5 @@
 import AppData from "./contexts/AppData";
+import Calculator from "./components/Calculator";
 import CurrencyRateDisplay from "./components/CurrencyRateDisplay";
 import DocTitleUpdater from "./components/DocTitleUpdater";
 import Gains from "./components/Gains";
@@ -18,6 +19,7 @@ export default function App() {
 					<Ticker />
 					<Gains />
 					<Milestones />
+					<Calculator />
 					<CurrencyRateDisplay />
 					<MoneyThermometer />
 					<SubtleSwitch />

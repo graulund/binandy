@@ -63,8 +63,9 @@ export default function Ticker() {
 					</TickerLabel>
 					<TickerValueInput
 						id="amount-in-input"
-						value={amountIn}
 						onChange={handleNewAmountIn}
+						placeholder="BTC"
+						value={amountIn || ""}
 					/>
 				</div>
 				<div className={styles.input}>
@@ -75,12 +76,13 @@ export default function Ticker() {
 					</TickerLabel>
 					<TickerValueInput
 						id="usdt-amount"
-						value={amountToSpend}
 						onChange={handleNewAmountToSpend}
+						placeholder="$"
+						value={amountToSpend || ""}
 					/>
 				</div>
 			</div>
-			{amountIn > 0 && (
+			{(amountIn > 0 || amountToSpend > 0) && (
 				<>
 					<TickerLabel>
 						Your holdings:

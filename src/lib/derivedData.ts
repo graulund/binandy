@@ -1,8 +1,18 @@
 import memoizeOne from "memoize-one";
 
 import { AppConfig } from "./appConfig";
+import {
+	createHoldingsAtHypotheticalPriceCalc as createHoldingsAtHypothPriceCalc,
+	createHypotheticalHoldingsCalc as createHypothHoldingsCalc,
+	createHypotheticalLocalHoldingsCalc as createHypothLocalHoldingsCalc,
+	createLocalHoldingsAtHypotheticalPriceCalc as createLocalHoldingsAtHypothPriceCalc,
+	createRequiredPriceForDesiredAmountCalc as createReqPriceForAmountCalc,
+	createRequiredPriceForDesiredHoldingsCalc as createReqPriceCalc,
+	createRequiredPriceForDesiredLocalHoldingsCalc as createReqPriceLocalCalc,
+	getExitGains as getExitGainsCalc,
+	getLocalExitGains as getLocalExitGainsCalc
+} from "./calculators";
 import { TickerEventData } from "./tickerData";
-import { transactionFeeLevels } from "../constants";
 
 type GainsWithFee = {
 	gainsPostFee: number;
@@ -12,8 +22,13 @@ type GainsWithFee = {
 export type DerivedValues = {
 	exitGains: GainsWithFee[] | null;
 	gains: number | null;
-	getNeededPriceForDesiredHoldings: (desiredHoldings: number) => number;
-	getNeededPriceForDesiredLocalHoldings: (desiredLocalHoldings: number) => number;
+	getHoldingsAtHypotheticalPrice: (hypotheticalPrice: number) => number;
+	getLocalHoldingsAtHypotheticalPrice: (hypotheticalPrice: number) => number;
+	getHypotheticalHoldings: (hypotheticalAmountIn: number) => number;
+	getHypotheticalLocalHoldings: (hypotheticalAmountIn: number) => number;
+	getRequiredPriceForDesiredAmount: (desiredAmount: number) => number;
+	getRequiredPriceForDesiredHoldings: (desiredHoldings: number) => number;
+	getRequiredPriceForDesiredLocalHoldings: (desiredLocalHoldings: number) => number;
 	holdings: number;
 	localAmountToSpend: number;
 	localExitGains: GainsWithFee[] | null;
@@ -26,32 +41,16 @@ export type DerivedValues = {
 	valueIn: number;
 };
 
-function createNeededPriceCalculator(
-	currentAmountIn: number,
-	currentAmountToSpend: number
-) {
-	return function getNeededPriceForDesiredHoldings(
-		desiredHoldings: number
-	) {
-		return (desiredHoldings - currentAmountToSpend) / currentAmountIn;
-	}
-}
-
-function createNeededPriceLocalCalculator(
-	currentAmountIn: number,
-	currentAmountToSpend: number,
-	localCurrencyRate: number
-) {
-	return function getNeededPriceForDesiredLocalHoldings(
-		desiredLocalHoldings: number
-	) {
-		return (desiredLocalHoldings / localCurrencyRate - currentAmountToSpend)
-			/ currentAmountIn;
-	}
-}
-
-const memoizedCreateNeededPriceCalculator = memoizeOne(createNeededPriceCalculator);
-const memoizedCreateNeededPriceLocalCalculator = memoizeOne(createNeededPriceLocalCalculator);
+// Memoize calculator creation functions
+const createRequiredPriceForDesiredAmountCalc = memoizeOne(createReqPriceForAmountCalc);
+const createRequiredPriceForDesiredHoldingsCalc = memoizeOne(createReqPriceCalc);
+const createRequiredPriceForDesiredLocalHoldingsCalc = memoizeOne(createReqPriceLocalCalc);
+const createHypotheticalHoldingsCalc = memoizeOne(createHypothHoldingsCalc);
+const createHypotheticalLocalHoldingsCalc = memoizeOne(createHypothLocalHoldingsCalc);
+const createHoldingsAtHypotheticalPriceCalc = memoizeOne(createHoldingsAtHypothPriceCalc);
+const createLocalHoldingsAtHypotheticalPriceCalc = memoizeOne(createLocalHoldingsAtHypothPriceCalc);
+const getExitGains = memoizeOne(getExitGainsCalc);
+const getLocalExitGains = memoizeOne(getLocalExitGainsCalc);
 
 export default function getDerivedData(
 	localCurrencyRate: number,
@@ -72,11 +71,32 @@ export default function getDerivedData(
 	let value: DerivedValues = {
 		exitGains: null,
 		gains: null,
-		getNeededPriceForDesiredHoldings: memoizedCreateNeededPriceCalculator(
+		getHoldingsAtHypotheticalPrice: createHoldingsAtHypotheticalPriceCalc(
 			amountIn,
 			amountToSpend
 		),
-		getNeededPriceForDesiredLocalHoldings: memoizedCreateNeededPriceLocalCalculator(
+		getHypotheticalHoldings: createHypotheticalHoldingsCalc(
+			amountToSpend,
+			closePrice
+		),
+		getHypotheticalLocalHoldings: createHypotheticalLocalHoldingsCalc(
+			amountToSpend,
+			closePrice,
+			localCurrencyRate
+		),
+		getLocalHoldingsAtHypotheticalPrice: createLocalHoldingsAtHypotheticalPriceCalc(
+			amountIn,
+			amountToSpend,
+			localCurrencyRate
+		),
+		getRequiredPriceForDesiredAmount: createRequiredPriceForDesiredAmountCalc(
+			amountToSpend
+		),
+		getRequiredPriceForDesiredHoldings: createRequiredPriceForDesiredHoldingsCalc(
+			amountIn,
+			amountToSpend
+		),
+		getRequiredPriceForDesiredLocalHoldings: createRequiredPriceForDesiredLocalHoldingsCalc(
 			amountIn,
 			amountToSpend,
 			localCurrencyRate
@@ -96,27 +116,10 @@ export default function getDerivedData(
 	if (originalPrice && originalPrice > 0) {
 		const originalValueIn = originalPrice * amountIn;
 		const originalLocalValueIn = originalPrice * amountIn * localCurrencyRate;
-
 		const gains = valueIn - originalValueIn;
 		const localGains = localValueIn - originalLocalValueIn;
-
-		const exitGains = transactionFeeLevels.map((fee) => {
-			const gainsPostFee = gains - (valueIn * fee);
-
-			return {
-				feeLevel: fee,
-				gainsPostFee,
-			};
-		});
-
-		const localExitGains = transactionFeeLevels.map((fee) => {
-			const gainsPostFee = localGains - (localValueIn * fee);
-
-			return {
-				feeLevel: fee,
-				gainsPostFee,
-			};
-		});
+		const exitGains = getExitGains(valueIn, originalValueIn);
+		const localExitGains = getLocalExitGains(localValueIn, originalLocalValueIn);
 
 		value = {
 			...value,

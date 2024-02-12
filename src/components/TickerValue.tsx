@@ -18,6 +18,7 @@ type TickerValueProps = {
 	isUp?: boolean;
 	size?: "normal" | "small";
 	value: number;
+	withParens?: boolean;
 	withSymbol?: boolean;
 };
 
@@ -45,6 +46,7 @@ export default function TickerValue({
 	isUp,
 	size,
 	value,
+	withParens,
 	withSymbol
 }: TickerValueProps) {
 	const subtle = useSubtle();
@@ -66,8 +68,10 @@ export default function TickerValue({
 	return (
 		<div className={className}>
 			<span>
+				{withParens && "("}
 				{isDifference && value > 0 && "+"}
 				{formattedValue}
+				{withParens && ")"}
 			</span>
 			{withSymbol && (
 				<span className={styles.valueSymbol}>

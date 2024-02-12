@@ -7,12 +7,14 @@ import styles from "./TickerValueInput.module.css";
 type TickerValueInputProps = {
 	id?: string;
 	onChange: (evt: React.ChangeEvent<HTMLInputElement>) => void;
-	value: number;
+	placeholder?: string;
+	value: string | number;
 };
 
 export default function TickerValueInput({
 	id,
 	onChange,
+	placeholder,
 	value
 }: TickerValueInputProps) {
 	const subtle = useSubtle();
@@ -27,6 +29,7 @@ export default function TickerValueInput({
 				type="number"
 				id={id}
 				onChange={onChange}
+				placeholder={placeholder}
 				value={value}
 			/>
 		</div>

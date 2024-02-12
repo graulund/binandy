@@ -6,7 +6,7 @@ const currencyRatesPayloadScheme = z.array(
 	z.object({
 		currencyCode: z.string(),
 		inboundRate: z.number(),
-		updated: z.string()
+		updated: z.string().nullable()
 	})
 );
 
@@ -30,7 +30,9 @@ export default async function fetchLocalCurrencyRate(): Promise<CurrencyRateInfo
 	if (localCurrencyRate) {
 		return {
 			rate: localCurrencyRate.inboundRate,
-			updated: new Date(localCurrencyRate.updated)
+			updated: localCurrencyRate.updated
+				? new Date(localCurrencyRate.updated)
+				: null
 		};
 	}
 
